@@ -59,9 +59,6 @@ prometheusoperator = kubectl apply -n monitoring prometheusOperator;
 hasPostgresql = kubectl get sts -n devtroncd postgresql-postgresql;
 if !hasPostgresql {
 	postgresqlOverride = load("/Users/pghildiy/Documents/devtronCode/installation-yamls/updates/postgresql.yaml");
-	if ! pwd || pwd == "***" {
-		log("please provide postgresql pwd in file /etc/config/postgresl.yaml at update.data.postgresql-password");
-	}
 	yamlEdit(postgresql, "data.PG_PASSWORD", postgresqlPassword, 0);
 	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 }
