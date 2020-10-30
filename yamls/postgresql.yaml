@@ -1,5 +1,3 @@
-WARNING: This chart is deprecated
----
 # Source: postgresql/templates/secrets.yaml
 apiVersion: v1
 kind: Secret
