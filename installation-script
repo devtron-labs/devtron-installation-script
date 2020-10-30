@@ -56,7 +56,7 @@ namespaces = kubectl apply namespace;
 
 #postgresql
 # if postgres already installed skip installation
-hasPostgresql = kubectl get sts -n devtroncd postgresql-postgresql;
+hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
 	postgresqlOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/postgresql.yaml");
 	yamlEdit(postgresql, "data.PG_PASSWORD", postgresqlPassword, 0);
@@ -64,7 +64,7 @@ if !hasPostgresql {
 }
 
 #argocd
-hasArgocd = kubectl get deployment -n devtroncd argocd-server;
+hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 argocdOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/argocd.yaml");
 #if argocd present then dont patch
 if !hasArgocd {
@@ -108,7 +108,7 @@ yamlEdit(guard, `data.key\.pem`, key, 0);
 
 
 # devtron
-hasDevtron = kubectl get deployment -n devtroncd devtron;
+hasDevtron = kubectl get deployment devtron -n devtroncd;
 orchToken = shellScript passwordGen;
 webHookToken = shellScript passwordGen;
 dexSecret = shellScript passwordGen;
