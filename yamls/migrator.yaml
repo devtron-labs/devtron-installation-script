@@ -12,16 +12,17 @@ type: Opaque
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: postgresql-migrate-orchestrator
+  name: postgresql-migrate-devtron
 spec:
+  ttlSecondsAfterFinished: 1000
   template:
     spec:
       containers:
-      - name: postgresql-migrate-orchestrator
+      - name: postgresql-migrate-devtron
         image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/migrator:0.0.1-rc23
         env:
         - name: GIT_BRANCH
-          value: release-candidate
+          value: main
         - name: SCRIPT_LOCATION
           value: scripts/sql/
         - name: GIT_REPO_URL
@@ -47,7 +48,7 @@ spec:
           - secretRef:
               name: migrator-git-secret
       restartPolicy: OnFailure
-  backoffLimit: 1
+  backoffLimit: 10
   activeDeadlineSeconds: 1500
 ---
 apiVersion: batch/v1
@@ -80,7 +81,7 @@ spec:
         - name: GIT_HASH
           value: 1e307a163f8fbb658d59be07ce0fb19d286beb2e
         - name: GIT_BRANCH
-          value: master
+          value: main
         envFrom:
           - secretRef:
               name: postgresql-migrator
@@ -118,7 +119,7 @@ spec:
         - name: MIGRATE_TO_VERSION
           value: "0"
         - name: GIT_BRANCH
-          value: master
+          value: main
         - name: GIT_HASH
           value: 5329353a4b7de5640341ee5b70057f8becc3f491
         envFrom:
@@ -158,7 +159,7 @@ spec:
         - name: MIGRATE_TO_VERSION
           value: "0"
         - name: GIT_BRANCH
-          value: master
+          value: main
         - name: GIT_HASH
           value: 772fcb2a4b3198879efb6139ed3a27dfb40ed681
         envFrom:
