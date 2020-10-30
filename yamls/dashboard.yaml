@@ -3,12 +3,10 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: devtron-secret
+  name: devtron-dashboard-secret
   labels:
     release: devtron
 type: Opaque
-data:
-  key: dmFsdWU=
 ---
 # Source: dashboard/templates/configmap.yaml
 apiVersion: v1
@@ -20,7 +18,7 @@ metadata:
 data:
   GA_ENABLED: "false"
   HOTJAR_ENABLED: "false"
-  SENTRY_ENABLED: "true"
+  SENTRY_ENABLED: "false"
   SENTRY_ENV: PRODUCTION
 ---
 # Source: dashboard/templates/sidecar-configmap.yaml
@@ -178,8 +176,6 @@ metadata:
   name: dashboard-service
   labels:
     app: dashboard
-    appId: "1"
-    envId: "4"
     chart: dashboard-3.9.1
     release: devtron
 spec:
@@ -202,8 +198,6 @@ metadata:
   namespace: 
   labels:
     app: dashboard
-    appId: "1"
-    envId: "4"
     chart: dashboard-3.9.1
     release: devtron
   annotations:
@@ -221,7 +215,7 @@ spec:
             servicePort: 80
 ---
 # Source: dashboard/templates/deployment.yaml
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dashboard
@@ -289,7 +283,7 @@ spec:
           - configMapRef:
               name: dashboard-cm
           - secretRef:    
-              name: devtron-secret
+              name: devtron-dashboard-secret
           resources:
             limits:
               cpu: "0.05"
