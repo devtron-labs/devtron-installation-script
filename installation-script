@@ -51,8 +51,8 @@ prometheusOperator = load("https://raw.githubusercontent.com/pghildiyal/devtron-
 namespace = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/namespace.yaml");
 
 #prometheus operator
-#namespaces = kubectl apply namespace;
-#prometheusoperator = kubectl apply -n monitoring prometheusOperator;
+namespaces = kubectl apply namespace;
+prometheusoperator = kubectl apply -n monitoring prometheusOperator;
 
 #postgresql
 # if postgres already installed skip installation
@@ -63,7 +63,7 @@ if !hasPostgresql {
 		log("please provide postgresql pwd in file /etc/config/postgresl.yaml at update.data.postgresql-password");
 	}
 	yamlEdit(postgresql, "data.PG_PASSWORD", postgresqlPassword, 0);
-	#postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
+	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 }
 
 #argocd
@@ -76,7 +76,7 @@ if !hasArgocd {
   # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
   # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 }
-#argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
+argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 
 #git-sensor
 yamlEdit(gitSensor, "data.PG_PASS", postgresqlPassword, 0);
@@ -96,8 +96,8 @@ yamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, 0);
 
 #guard
 certGen = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/generate_certificate.sh");
-grumpyConfig = download("https://raw.githubusercontent.com/devtron-labs/key-gen/main/grumpy_config.txt", "/tmp/certs/grumpy_config.txt");
-caConfig = download("https://raw.githubusercontent.com/devtron-labs/key-gen/main/ca_config.txt", "/tmp/certs/ca_config.txt");
+grumpyConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/grumpy_config.txt", "/tmp/certs/grumpy_config.txt");
+caConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/ca_config.txt", "/tmp/certs/ca_config.txt");
 certs = shellScript certGen;
 base64DecoderPrefix = `#!/bin/bash 
 cat `;
@@ -147,22 +147,22 @@ yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, 
 yamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, 1);
 yamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, 1);
 devtronOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/devtron.yaml");
-#devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
-#devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress;
+devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
+devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress;
 
-#clair = kubectl apply -n devtroncd clair;
-#dashboard = kubectl apply -n devtroncd dashboard;
-#chartmuseum = kubectl apply -n devtroncd chartmuseum;
-#workflow = kubectl apply -n devtroncd workflow;
-#natsOperator = kubectl apply -n devtroncd natsOperator;
-#natsServer = kubectl apply -n devtroncd natsServer;
-#natsStreaming = kubectl apply -n devtroncd natsStreaming;
-#gitSensorOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/gitsensor.yaml");
-#gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
-#imageScannerOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/image-scanner.yaml");
-#imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
-#kubewatch = kubectl apply -n devtroncd kubewatch;
-#lensOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/lens.yaml");
-#lens = kubectl apply -n devtroncd lens -u lensOverride;
-#notifierOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/notifier.yaml");
-#notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
+clair = kubectl apply -n devtroncd clair;
+dashboard = kubectl apply -n devtroncd dashboard;
+chartmuseum = kubectl apply -n devtroncd chartmuseum;
+workflow = kubectl apply -n devtroncd workflow;
+natsOperator = kubectl apply -n devtroncd natsOperator;
+natsServer = kubectl apply -n devtroncd natsServer;
+natsStreaming = kubectl apply -n devtroncd natsStreaming;
+gitSensorOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/gitsensor.yaml");
+gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
+imageScannerOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/image-scanner.yaml");
+imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
+kubewatch = kubectl apply -n devtroncd kubewatch;
+lensOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/lens.yaml");
+lens = kubectl apply -n devtroncd lens -u lensOverride;
+notifierOverride = load("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/notifier.yaml");
+notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
