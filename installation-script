@@ -58,7 +58,7 @@ namespaces = kubectl apply namespace;
 # if postgres already installed skip installation
 hasPostgresql = kubectl get sts -n devtroncd postgresql-postgresql;
 if !hasPostgresql {
-	postgresqlOverride = download("/Users/pghildiy/Documents/devtronCode/installation-yamls/updates/postgresql.yaml");
+	postgresqlOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/postgresql.yaml");
 	yamlEdit(postgresql, "data.PG_PASSWORD", postgresqlPassword, 0);
 	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 }
