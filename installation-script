@@ -59,10 +59,9 @@ namespaces = kubectl apply namespace;
 hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
 	postgresqlOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/postgresql.yaml");
-	yamlEdit(postgresql, "data.PG_PASSWORD", postgresqlPassword, 0);
+	yamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, 0);
 	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 }
-
 #argocd
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 argocdOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/argocd.yaml");
@@ -70,96 +69,9 @@ argocdOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-
 if !hasArgocd {
   yamlEdit(argocd, "data.url", baseURL, 15);
   yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
+  yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 14);
+  yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
   # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
   # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 }
-#argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
-
-#git-sensor
-yamlEdit(gitSensor, "data.PG_PASS", postgresqlPassword, 0);
-
-#notifier
-yamlEdit(notifier, "data.DB_PWD", postgresqlPassword, 0);
-yamlEdit(notifier, "data.BASE_URL", baseURL, 1);
-
-#image-scanner
-yamlEdit(imageScanner, "data.PG_PASSWORD", postgresqlPassword, 0);
-
-#lens
-yamlEdit(lens, "data.PG_PASSWORD", postgresqlPassword, 0);
-
-#migrator
-yamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, 0);
-
-#guard
-certGen = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/generate_certificate.sh");
-grumpyConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/grumpy_config.txt", "/tmp/certs/grumpy_config.txt");
-caConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/ca_config.txt", "/tmp/certs/ca_config.txt");
-certs = shellScript certGen;
-base64DecoderPrefix = `#!/bin/bash 
-cat `;
-base64DecoderSuffix = ` | base64 | tr -d ':\n'`;
-crt = base64DecoderPrefix + "/tmp/certs/grumpy-crt.pem" + base64DecoderSuffix;
-crt = shellScript crt;
-key = base64DecoderPrefix + "/tmp/certs/grumpy-key.pem" + base64DecoderSuffix;
-key = shellScript key;
-yamlEdit(guard, `data.cert\.pem`, crt, 0);
-yamlEdit(guard, `data.key\.pem`, key, 0);
-
-
-# devtron
-hasDevtron = kubectl get deployment devtron -n devtroncd;
-orchToken = shellScript passwordGen;
-webHookToken = shellScript passwordGen;
-dexSecret = shellScript passwordGen;
-dexJwtKey = shellScript passwordGen;
-dexCStoreKey = shellScript passwordGen;
-externalCIAPISecret = shellScript passwordGen;
-grafanaUrl = "http://%s:%s@" + baseURL + "/grafana";
-yamlEdit(devtron, "data.PG_PASSWORD", postgresqlPassword, 0);
-yamlEdit(devtron, "data.GIT_TOKEN", gitToken, 0);
-if !hasDevtron {
-	yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
-	yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
-	yamlEdit(devtron, "data.ORCH_TOKEN", orchToken, 0);
-	yamlEdit(devtron, "data.DEX_SECRET", dexSecret, 0);
-	yamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, 0);
-	yamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, 0);
-	# populate acd password
-	allDevtroncdPo = kubectl get po -n devtroncd;
-	argocdPodNameSelector = `items.#(metadata.labels.app\.kubernetes\.io/name=="argocd-server").metadata.name`;
-	acdPassword = jsonSelect(allDevtroncdPo, argocdPodNameSelector);
-	yamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, 0);
-}
-
-yamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURL+"/orchestrator/webhook/ext-ci", 1);
-yamlEdit(devtron, "data.GITLAB_NAMESPACE_ID", gitlabNamespaceId, 1);
-yamlEdit(devtron, "data.GITLAB_NAMESPACE_NAME", gitlabNamespaceName, 1);
-yamlEdit(devtron, "data.GIT_USERNAME", gitUserName, 1);
-yamlEdit(devtron, "data.GITHUB_ORGANIZATION", githubOrganization, 1);
-yamlEdit(devtron, "data.GIT_PROVIDER", gitProvider, 1);
-yamlEdit(devtron, "data.DEFAULT_CD_LOGS_BUCKET_REGION", defaultCDLogsBucketRegion, 1);
-yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, 1);
-yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, 1);
-yamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, 1);
-yamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, 1);
-devtronOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/devtron.yaml");
-#devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
-#devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress;
-
-#clair = kubectl apply -n devtroncd clair;
-#dashboard = kubectl apply -n devtroncd dashboard;
-#chartmuseum = kubectl apply -n devtroncd chartmuseum;
-#workflow = kubectl apply -n devtroncd workflow;
-#natsOperator = kubectl apply -n devtroncd natsOperator;
-#natsServer = kubectl apply -n devtroncd natsServer;
-#natsStreaming = kubectl apply -n devtroncd natsStreaming;
-#gitSensorOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/gitsensor.yaml");
-#gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
-#imageScannerOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/image-scanner.yaml");
-#imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
-#kubewatch = kubectl apply -n devtroncd kubewatch;
-#lensOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/lens.yaml");
-#lens = kubectl apply -n devtroncd lens -u lensOverride;
-#notifierOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/notifier.yaml");
-#notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
+argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
