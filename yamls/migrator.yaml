@@ -25,7 +25,7 @@ spec:
         - name: SCRIPT_LOCATION
           value: scripts/sql/
         - name: GIT_REPO_URL
-          value: https://gitlab.com/devtron/orchestrator.git
+          value: https://github.com/devtron-labs/devtron.git
         - name: DB_TYPE
           value: postgres
         - name: DB_USER_NAME
@@ -39,7 +39,7 @@ spec:
         - name: MIGRATE_TO_VERSION
           value: "0"
         - name: GIT_HASH
-          value: 3a615ae390edebb5103034b626577a21b36f75c3
+          value: 1e307a163f8fbb658d59be07ce0fb19d286beb2e
         envFrom:
           - secretRef:
               name: postgresql-migrator
@@ -64,7 +64,7 @@ spec:
         - name: SCRIPT_LOCATION
           value: scripts/casbin/
         - name: GIT_REPO_URL
-          value: https://gitlab.com/devtron/orchestrator.git
+          value: https://github.com/devtron-labs/devtron.git
         - name: DB_TYPE
           value: postgres
         - name: DB_USER_NAME
@@ -78,7 +78,7 @@ spec:
         - name: MIGRATE_TO_VERSION
           value: "0"
         - name: GIT_HASH
-          value: f88169c05ed5f7283c07e4025fbe83d6e0652db5
+          value: 1e307a163f8fbb658d59be07ce0fb19d286beb2e
         - name: GIT_BRANCH
           value: master
         envFrom:
@@ -104,7 +104,7 @@ spec:
         - name: SCRIPT_LOCATION
           value: scripts/sql/
         - name: GIT_REPO_URL
-          value: https://gitlab.com/devtron/git-sensor.git
+          value: https://github.com/devtron-labs/git-sensor.git
         - name: DB_TYPE
           value: postgres
         - name: DB_USER_NAME
@@ -120,7 +120,7 @@ spec:
         - name: GIT_BRANCH
           value: master
         - name: GIT_HASH
-          value: 9f707225a42332c24bd89740a01f1c68c5d6eef2
+          value: 5329353a4b7de5640341ee5b70057f8becc3f491
         envFrom:
           - secretRef:
               name: postgresql-migrator
@@ -144,7 +144,7 @@ spec:
         - name: SCRIPT_LOCATION
           value: scripts/sql/
         - name: GIT_REPO_URL
-          value: https://gitlab.com/devtron/lens.git
+          value: https://github.com/devtron-labs/lens.git
         - name: DB_TYPE
           value: postgres
         - name: DB_USER_NAME
@@ -160,7 +160,7 @@ spec:
         - name: GIT_BRANCH
           value: master
         - name: GIT_HASH
-          value: 7a5365f73d1f3f49f3db66176ddb1cf15d64c826
+          value: 772fcb2a4b3198879efb6139ed3a27dfb40ed681
         envFrom:
           - secretRef:
               name: postgresql-migrator
