@@ -1,0 +1,171 @@
+# Source: postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgresql-migrator
+  labels:
+    app: postgresql
+    chart: postgresql-8.6.4
+    release: "devtron"
+type: Opaque
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-orchestrator
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgresql-migrate-orchestrator
+        image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/migrator:0.0.1-rc23
+        env:
+        - name: GIT_BRANCH
+          value: release-candidate
+        - name: SCRIPT_LOCATION
+          value: scripts/sql/
+        - name: GIT_REPO_URL
+          value: https://gitlab.com/devtron/orchestrator.git
+        - name: DB_TYPE
+          value: postgres
+        - name: DB_USER_NAME
+          value: postgres
+        - name: DB_HOST
+          value: postgresql-postgresql.devtroncd
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: orchestrator                      
+        - name: MIGRATE_TO_VERSION
+          value: "0"
+        - name: GIT_HASH
+          value: 3a615ae390edebb5103034b626577a21b36f75c3
+        envFrom:
+          - secretRef:
+              name: postgresql-migrator
+          # remove this
+          - secretRef:
+              name: migrator-git-secret
+      restartPolicy: OnFailure
+  backoffLimit: 1
+  activeDeadlineSeconds: 1500
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-casbin
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgresql-migrate-casbin
+        image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/migrator:0.0.1-rc23
+        env:
+        - name: SCRIPT_LOCATION
+          value: scripts/casbin/
+        - name: GIT_REPO_URL
+          value: https://gitlab.com/devtron/orchestrator.git
+        - name: DB_TYPE
+          value: postgres
+        - name: DB_USER_NAME
+          value: postgres
+        - name: DB_HOST
+          value: postgresql-postgresql.devtroncd
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: casbin
+        - name: MIGRATE_TO_VERSION
+          value: "0"
+        - name: GIT_HASH
+          value: f88169c05ed5f7283c07e4025fbe83d6e0652db5
+        - name: GIT_BRANCH
+          value: master
+        envFrom:
+          - secretRef:
+              name: postgresql-migrator
+          - secretRef:
+              name: migrator-git-secret
+      restartPolicy: OnFailure
+  backoffLimit: 1
+  activeDeadlineSeconds: 1500
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-gitsensor
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgresql-migrate-gitsensor
+        image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/migrator:0.0.1-rc23
+        env:
+        - name: SCRIPT_LOCATION
+          value: scripts/sql/
+        - name: GIT_REPO_URL
+          value: https://gitlab.com/devtron/git-sensor.git
+        - name: DB_TYPE
+          value: postgres
+        - name: DB_USER_NAME
+          value: postgres
+        - name: DB_HOST
+          value: postgresql-postgresql.devtroncd
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: git_sensor
+        - name: MIGRATE_TO_VERSION
+          value: "0"
+        - name: GIT_BRANCH
+          value: master
+        - name: GIT_HASH
+          value: 9f707225a42332c24bd89740a01f1c68c5d6eef2
+        envFrom:
+          - secretRef:
+              name: postgresql-migrator
+          - secretRef:
+              name: migrator-git-secret
+      restartPolicy: OnFailure
+  backoffLimit: 1
+  activeDeadlineSeconds: 1500
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-lens
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgresql-migrate-lens
+        image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/migrator:0.0.1-rc23
+        env:
+        - name: SCRIPT_LOCATION
+          value: scripts/sql/
+        - name: GIT_REPO_URL
+          value: https://gitlab.com/devtron/lens.git
+        - name: DB_TYPE
+          value: postgres
+        - name: DB_USER_NAME
+          value: postgres
+        - name: DB_HOST
+          value: postgresql-postgresql.devtroncd
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: lens
+        - name: MIGRATE_TO_VERSION
+          value: "0"
+        - name: GIT_BRANCH
+          value: master
+        - name: GIT_HASH
+          value: 7a5365f73d1f3f49f3db66176ddb1cf15d64c826
+        envFrom:
+          - secretRef:
+              name: postgresql-migrator
+          - secretRef:
+              name: migrator-git-secret
+      restartPolicy: OnFailure
+  backoffLimit: 1
+  activeDeadlineSeconds: 1500

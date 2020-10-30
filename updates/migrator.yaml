@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-orchestrator
+update:
+  spec:
+    template:
+      spec:
+        containers:
+          env:
+          - name: DB_PASSWORD
+            value: "***"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-casbin
+update:
+  spec:
+    template:
+      spec:
+        containers:
+          env:
+          - name: DB_PASSWORD
+            value: "***"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-gitsensor
+update:
+  spec:
+    template:
+      spec:
+        containers:
+          env:
+          - name: DB_PASSWORD
+            value: "***"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-lens
+update:
+  spec:
+    template:
+      spec:
+        containers:
+          env:
+          - name: DB_PASSWORD
+            value: "***"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgresql-migrate-test-reporter
+update:
+  spec:
+    template:
+      spec:
+        containers:
+          env:
+          - name: DB_PASSWORD
+            value: "***"

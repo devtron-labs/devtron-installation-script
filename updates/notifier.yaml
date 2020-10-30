@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: notifier-secrets
+update:
+  data:
+  	#domain name
+    BASE_URL: "****"
+    CD_ENVIRONMENT: DEV
+    DB: orchestrator
+    DB_HOST: postgresql-postgresql.devtroncd
+    DB_PORT: "5432"
+    DB_PWD: "****"
+    DB_USER: postgres

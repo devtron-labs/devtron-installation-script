@@ -1,0 +1,89 @@
+---
+# Source: gitsensor/templates/generic.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-sensor-secret
+  labels:
+    app: git-sensor
+---
+# Source: gitsensor/templates/generic.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: git-sensor-service
+  labels:
+    app: git-sensor
+    release: devtron
+spec:
+  ports:
+    - port: 80
+      name: sensor
+      targetPort: 8080
+  selector:
+    app: git-sensor
+---
+# Source: gitsensor/templates/generic.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: git-sensor
+  labels:
+    release: devtron
+    app: git-sensor
+spec:
+  selector:
+    matchLabels:
+      app: git-sensor # has to match .spec.template.metadata.labels
+  serviceName: git-sensor
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: git-sensor
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: git-sensor
+          image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/git-sensor:81173eda-17-223
+          ports:
+            - containerPort: 8080
+              name: sensor
+          volumeMounts:
+            - name: git-volume
+              mountPath: /git-base/
+          env:
+            - name: PG_PASS
+              value: "***"
+            - name: PG_ADDR
+              value: "postgresql-postgresql.devtroncd"
+          envFrom:
+          - secretRef:
+              name: git-sensor-secret
+  volumeClaimTemplates:
+    - metadata:
+        name: git-volume
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: gp2
+        resources:
+          requests:
+            storage: 2Gi
+---
+# Source: gitsensor/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: git-sensor-sm
+  labels:
+    chart: gitsensor-0.11.0
+    app: git-sensor
+    kind: Prometheus
+    release: devtron
+spec:
+  endpoints:
+    - port: app
+      path: /metrics
+  selector:
+    matchLabels:
+      app: git-sensor

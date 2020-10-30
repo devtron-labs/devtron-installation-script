@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devtroncd
+  labels:
+    name: devtroncd
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devtron-ci
+  labels:
+    name: devtron-ci
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devtron-cd
+  labels:
+    name: devtron-cd
