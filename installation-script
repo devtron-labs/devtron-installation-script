@@ -65,7 +65,7 @@ namespaces = kubectl apply namespace;
 sa = kubectl apply serviceAccount;
 
 #prometheus operator
-prometheusoperator = kubectl apply -n monitoring prometheusOperator;
+#prometheusoperator = kubectl apply -n monitoring prometheusOperator;
 
 #postgresql
 # if postgres already installed skip installation
