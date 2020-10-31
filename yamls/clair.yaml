@@ -67,7 +67,7 @@ spec:
       containers:
       - name: clair
         image: "clair-local:latest"
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         args:
         - "-log-level=info"
         ports:
