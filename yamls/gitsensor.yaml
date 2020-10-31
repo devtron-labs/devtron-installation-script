@@ -1,4 +1,3 @@
----
 # Source: gitsensor/templates/generic.yaml
 apiVersion: v1
 kind: Secret
@@ -53,8 +52,6 @@ spec:
             - name: git-volume
               mountPath: /git-base/
           env:
-            - name: PG_PASS
-              value: "***"
             - name: PG_ADDR
               value: "postgresql-postgresql.devtroncd"
           envFrom:

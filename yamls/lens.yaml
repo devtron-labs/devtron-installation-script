@@ -1,4 +1,3 @@
----
 # Source: lens/templates/configmap.yaml
 apiVersion: v1
 kind: Secret
@@ -224,8 +223,6 @@ spec:
     metadata:
       labels:
         app: lens
-        appId: "6"
-        envId: "4"
         release: devtron
     spec:
       terminationGracePeriodSeconds: 30

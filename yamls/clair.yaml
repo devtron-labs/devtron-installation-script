@@ -1,4 +1,3 @@
----
 # Source: clair/templates/secret.yaml
 apiVersion: v1
 kind: Secret
