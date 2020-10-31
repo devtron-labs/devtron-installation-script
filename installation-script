@@ -20,6 +20,14 @@ defaultBuildLogsBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_BUILD_LOGS_
 passwordGen = `#!/bin/bash
 openssl rand -base64 20 | base64`;
 
+base64EncoderPrefix = `#!/bin/bash 
+`;
+base64EncoderSuffix = ` | base64 | tr -d ':\n'`;
+
+base64DecoderPrefix = `#!/bin/bash 
+`;
+base64DecoderSuffix = ` | base64 -d | tr -d ':\n'`;
+
 if !postgresqlPassword {
 	log("postgresql password is mandatory");
 }
@@ -32,6 +40,7 @@ if !gitToken {
 argocd = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/argocd.yaml");
 chartmuseum = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/chartmuseum.yaml");
 clair = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/clair.yaml");
+clairConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/clair-config.yaml");
 dashboard = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/dashboard.yaml");
 gitSensor = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/gitsensor.yaml");
 guard = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/guard.yaml");
@@ -47,12 +56,15 @@ notifier = download("https://raw.githubusercontent.com/pghildiyal/devtron-instal
 devtron = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/devtron.yaml");
 devtronDexIngress = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
 workflow = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/workflow.yaml");
-workflowSa = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/workflow-sa.yaml");
+serviceAccount = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/serviceaccount.yaml");
 prometheusOperator = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/prometheus-operator.yaml");
 namespace = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/namespace.yaml");
 
-#prometheus operator
+
 namespaces = kubectl apply namespace;
+sa = kubectl apply serviceAccount;
+
+#prometheus operator
 prometheusoperator = kubectl apply -n monitoring prometheusOperator;
 
 #postgresql
@@ -108,9 +120,6 @@ certGen = download("https://raw.githubusercontent.com/pghildiyal/devtron-install
 grumpyConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/grumpy_config.txt", "/tmp/certs/grumpy_config.txt");
 caConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/ca_config.txt", "/tmp/certs/ca_config.txt");
 certs = shellScript certGen;
-base64EncoderPrefix = `#!/bin/bash 
-`;
-base64EncoderSuffix = ` | base64 | tr -d ':\n'`;
 crt = base64EncoderPrefix + "cat /tmp/certs/grumpy-crt.pem" + base64EncoderSuffix;
 crt = shellScript crt;
 key = base64EncoderPrefix + "cat /tmp/certs/grumpy-key.pem" + base64EncoderSuffix;
@@ -130,6 +139,8 @@ externalCIAPISecret = shellScript passwordGen;
 grafanaUrl = "http://%s:%s@" + baseURL + "/grafana";
 yamlEdit(devtron, "data.PG_PASSWORD", postgresqlPassword, 0);
 yamlEdit(devtron, "data.GIT_TOKEN", gitToken, 0);
+
+#fix this, as this will result in fields getting changed, if exists then we need to pull existing values and apply again
 if !hasDevtron {
 	yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
 	yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
@@ -175,5 +186,29 @@ lens = kubectl apply -n devtroncd lens -u lensOverride;
 notifierOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/notifier.yaml");
 notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
 
-#workflow = kubectl apply -n devtroncd workflow;
-#clair = kubectl apply -n devtroncd clair;
+workflowConfig = `parallelism: 50
+artifactRepository:
+  archiveLogs: true
+  s3:
+    endpoint: s3.amazonaws.com
+    bucket: `;
+workflowConfig = workflowConfig + defaultBuildLogsBucket;
+workflowConfig = workflowConfig + `
+    region: `;
+workflowConfig = workflowConfig + defaultCacheBucketRegion;
+workflowConfig = workflowConfig + `
+    keyFormat: devtron/{{workflow.name}}
+containerRuntimeExecutor: pns
+executor:
+  imagePullPolicy: Always`;
+yamlEdit(workflow, "data.config", workflowConfig, 10);
+workflow = kubectl apply -n argo workflow;
+
+postgresPlainPwd = base64DecoderPrefix + `echo "` + postgresqlPassword + `" | tr -d ':\n' ` + base64DecoderSuffix;
+postgresPlainPwd = shellScript postgresPlainPwd;
+clairPosrgresUrl = "postgres://postgres:"+ postgresPlainPwd +"@postgresql-postgresql.devtroncd:5432/clair?sslmode=disable";
+yamlEdit(clairConfig, "clair.database.options.source", clairPosrgresUrl, 0);
+clairEncodedConfig = base64EncoderPrefix + `echo "` + clairConfig + `"` + base64EncoderSuffix;
+clairEncodedConfig = shellScript clairEncodedConfig;
+yamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, 0);
+clair = kubectl apply -n devtroncd clair;
