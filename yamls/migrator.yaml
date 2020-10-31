@@ -79,7 +79,7 @@ spec:
         - name: MIGRATE_TO_VERSION
           value: "0"
         - name: GIT_HASH
-          value: 1e307a163f8fbb658d59be07ce0fb19d286beb2e
+          value: 380ae8bcac9ec86e3fe045efe214b364bf3dc599
         - name: GIT_BRANCH
           value: main
         envFrom:
