@@ -10,18 +10,25 @@ kind: Namespace
 metadata:
   name: devtroncd
   labels:
-    name: devtroncd
+    name: devtron
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: devtron-ci
   labels:
-    name: devtron-ci
+    name: devtron
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: devtron-cd
   labels:
-    name: devtron-cd
+    name: devtron
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argo
+  labels:
+    name: devtron
