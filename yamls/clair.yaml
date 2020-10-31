@@ -66,8 +66,8 @@ spec:
           do echo waiting for database; sleep 1; done;"]
       containers:
       - name: clair
-        image: "clair-local:latest"
-        imagePullPolicy: Always
+        image: "IfNotPresent"
+        imagePullPolicy: IfNotPresent
         args:
         - "-log-level=info"
         ports:
