@@ -2,5 +2,3 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: image-scanner-secret
-data:
-  PG_PASSWORD: "***"
