@@ -44,7 +44,7 @@ spec:
     app: image-scanner
 ---
 # Source: image-scanner-new/templates/deployment.yaml
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: image-scanner
