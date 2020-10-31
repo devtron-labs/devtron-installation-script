@@ -1,4 +1,3 @@
----
 # Source: kubewatch/templates/generic.yaml
 # Source: kubewatch/templates/servieaccount.yaml
 apiVersion: v1
@@ -6,7 +5,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: kubewatch
-    chart: kubewatch-0.6.1x
+    chart: kubewatch-0.6.1
     release: devtron
   name: kubewatch
   namespace: devtroncd
@@ -135,7 +134,7 @@ subjects:
 ---
 # Source: kubewatch/templates/generic.yaml
 # Source: kubewatch/templates/deployment.yaml
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
