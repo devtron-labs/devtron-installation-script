@@ -17,7 +17,7 @@ data:
   GIT_SENSOR_URL: http://git-sensor-service.devtroncd:80
   NATS_SERVER_HOST: nats://devtron-nats.devtroncd:4222
   PG_ADDR: postgresql-postgresql.devtroncd
-  PG_PORT: 5432
+  PG_PORT: "5432"
   PG_USER: postgres
   PG_DATABASE: lens
 ---
