@@ -15,7 +15,7 @@ metadata:
   labels:
     release: devtron
 data:
-  CLAIR_ADDR: dt-clair-prod-devtroncd.devtroncd:6060
+  CLAIR_ADDR: clair.devtroncd:6060
   CLIENT_ID: client-2
   NATS_SERVER_HOST: nats://devtron-nats.devtroncd:4222
   PG_ADDR: postgresql-postgresql.devtroncd
