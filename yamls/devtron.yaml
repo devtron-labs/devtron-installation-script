@@ -90,8 +90,6 @@ metadata:
   name: devtron-service
   labels:
     app: devtron
-    appId: "3"
-    envId: "4"
     chart: devtron-3.9.1
     release: devtron
 spec:
@@ -112,8 +110,6 @@ metadata:
   namespace: 
   labels:
     app: devtron
-    appId: "3"
-    envId: "4"
     chart: devtron-3.9.1
     release: devtron
   annotations:
@@ -126,7 +122,7 @@ spec:
       paths:
         - path: /orchestrator(/|$)(.*)
           backend:
-            serviceName: devtron-devtroncd-service
+            serviceName: devtron-service
             servicePort: 80
 ---
 # Source: devtron/templates/deployment.yaml
