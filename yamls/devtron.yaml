@@ -20,7 +20,8 @@ data:
   CD_NAMESPACE: "devtroncd"
   EVENT_URL: "http://notifier-service.devtroncd:80/notify"
   GIT_SENSOR_URL: "http://git-sensor-service.devtroncd:80"
-  GIT_SENSOR_TIMEOUT: "300" 
+  #time in ms
+  GIT_SENSOR_TIMEOUT: "300000" 
   GRAFANA_USERNAME: "admin" 
   GRAFANA_PASSWORD: "prom-operator"
   GRAFANA_ORG_ID: "2"

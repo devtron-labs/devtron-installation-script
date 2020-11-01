@@ -170,3 +170,51 @@ spec:
       restartPolicy: OnFailure
   backoffLimit: 1
   activeDeadlineSeconds: 1500
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: app-sync-cronjob
+spec:
+  schedule: "0 19 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: chart-sync
+            image: perl
+            image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/chart-sync:63ee2b
+            env:
+            - name: PG_ADDR
+              value: postgresql-postgresql.devtroncd
+            - name: PG_DATABASE
+              value: orchestrator
+            envFrom:
+            - secretRef:
+                name: devtron-secret
+          restartPolicy: Never
+      backoffLimit: 4
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: app-sync-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: chart-sync
+        image: perl
+        image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/chart-sync:63ee2b
+        env:
+        - name: PG_ADDR
+          value: postgresql-postgresql.devtroncd
+        - name: PG_DATABASE
+          value: orchestrator
+        envFrom:
+        - secretRef:
+            name: devtron-secret
+      restartPolicy: OnFailure
+  backoffLimit: 4
+  activeDeadlineSeconds: 1500

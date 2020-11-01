@@ -223,7 +223,6 @@ metadata:
     app: dashboard
     chart: dashboard-3.9.1
     release: devtron
-    pipelineName: dashboard-prod-cd
 spec:
   selector:
     matchLabels:
