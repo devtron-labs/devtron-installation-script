@@ -131,6 +131,9 @@ natsServer = kubectl apply -n devtroncd natsServer;
 natsStreaming = kubectl apply -n devtroncd natsStreaming;
 
 #guard
+makeCertsDir = `#!/bin/bash
+mkdir -p /tmp/certs`;
+makeCertsDir = shellScript makeCertsDir;
 certGen = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/generate_certificate.sh");
 grumpyConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/grumpy_config.txt", "/tmp/certs/grumpy_config.txt");
 caConfig = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/ca_config.txt", "/tmp/certs/ca_config.txt");
