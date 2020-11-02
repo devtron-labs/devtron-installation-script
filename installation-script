@@ -94,17 +94,16 @@ if hasArgocd {
 	}
 }
 
-if !hasArgocd {
-  yamlEdit(argocd, "data.url", baseURL, 15);
-  yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
-  # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
-  # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
-}
+yamlEdit(argocd, "data.url", baseURL, 15);
+yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
+# patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
+# pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
+
 yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 14);
 yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
 argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
-patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
-pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
+#patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
+#pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
 
 #git-sensor
@@ -203,15 +202,15 @@ if hasDevtron {
 		acdPassword = tacdPassword;
 	}
 }
-if !hasDevtron {
-	yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
-	yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
-	yamlEdit(devtron, "data.ORCH_TOKEN", orchToken, 0);
-	yamlEdit(devtron, "data.DEX_SECRET", dexSecret, 0);
-	yamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, 0);
-	yamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, 0);
-	yamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, 0);
-}
+
+yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
+yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
+yamlEdit(devtron, "data.ORCH_TOKEN", orchToken, 0);
+yamlEdit(devtron, "data.DEX_SECRET", dexSecret, 0);
+yamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, 0);
+yamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, 0);
+yamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, 0);
+
 
 yamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURL+"/orchestrator/webhook/ext-ci", 1);
 yamlEdit(devtron, "data.GITLAB_NAMESPACE_ID", gitlabNamespaceId, 1);
