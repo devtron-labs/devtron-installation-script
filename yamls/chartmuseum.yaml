@@ -89,22 +89,22 @@ spec:
           value: "prov"
         - name: "STORAGE"
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: devtron-chartmuseum
               key: "CHARTMUSEUM_STORAGE"
         - name: "STORAGE_AMAZON_BUCKET"
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: devtron-chartmuseum
               key: "CHARTMUSEUM_STORAGE_AMAZON_BUCKET"
         - name: "STORAGE_AMAZON_PREFIX"
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: devtron-chartmuseum
               key: "CHARTMUSEUM_STORAGE_AMAZON_PREFIX"
         - name: "STORAGE_AMAZON_REGION"
           valueFrom:
-            configMapRef:
+            configMapKeyRef:
               name: devtron-chartmuseum
               key: "CHARTMUSEUM_STORAGE_AMAZON_REGION"
         args:
