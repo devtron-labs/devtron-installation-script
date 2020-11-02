@@ -17,8 +17,8 @@ defaultCacheBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET");
 defaultCacheBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET_REGION");
 defaultBuildLogsBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_BUILD_LOGS_BUCKET");
 chartmuseumStorageAmazonBucket = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET");
-chartmuseumStorateAmazonRegion = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION");
-
+chartmuseumStorageAmazonRegion = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION");
+externalSecretAmazonRegion = jsonSelect(operatorConfigMap, "data.EXTERNAL_SECRET_AMAZON_REGION");
 
 passwordGen = `#!/bin/bash
 openssl rand -base64 20 | base64`;
@@ -62,13 +62,17 @@ workflow = download("https://raw.githubusercontent.com/pghildiyal/devtron-instal
 serviceAccount = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/serviceaccount.yaml");
 prometheusOperator = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/prometheus-operator.yaml");
 namespace = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/namespace.yaml");
-
+externalSecret = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/namespace.yaml");
 
 namespaces = kubectl apply namespace;
 sa = kubectl apply serviceAccount;
 
 #prometheus operator
 #prometheusoperator = kubectl apply -n monitoring prometheusOperator;
+
+#externalSecret
+yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
+externalSecret = kubectl apply -n devtroncd externalSecret;
 
 #postgresql
 # if postgres already installed skip installation
@@ -146,7 +150,7 @@ yamlEdit(guard, `data.key\.pem`, key, 0);
 
 #chartmuseum
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, 1);
-yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorateAmazonRegion, 1);
+yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, 1);
 chartmuseum = kubectl apply -n devtroncd chartmuseum;
 
 # devtron
