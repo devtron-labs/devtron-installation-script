@@ -16,6 +16,9 @@ defaultCDLogsBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CD_LOGS_
 defaultCacheBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET");
 defaultCacheBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET_REGION");
 defaultBuildLogsBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_BUILD_LOGS_BUCKET");
+chartmuseumStorageAmazonBucket = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET");
+chartmuseumStorateAmazonRegion = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION");
+
 
 passwordGen = `#!/bin/bash
 openssl rand -base64 20 | base64`;
@@ -79,6 +82,18 @@ if !hasPostgresql {
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 argocdOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/argocd.yaml");
 #if argocd present then dont patch
+if hasArgocd {
+	argocdCM = kubectl get cm argocd-cm -n devtroncd;
+	tbaseURL = jsonSelect(argocdCM, "data.url");
+	if tbaseURL {
+		tbaseURL = baseURL;
+	}
+	tdexConfig = jsonSelect(argocdCM, "data.dex\.config");
+	if tdexConfig {
+		dexConfig = tdexConfig;
+	}
+}
+
 if !hasArgocd {
   yamlEdit(argocd, "data.url", baseURL, 15);
   yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
@@ -127,6 +142,11 @@ key = shellScript key;
 yamlEdit(guard, `data.cert\.pem`, crt, 0);
 yamlEdit(guard, `data.key\.pem`, key, 0);
 
+#chartmuseum
+yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, 1);
+yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorateAmazonRegion, 1);
+chartmuseum = kubectl apply -n devtroncd chartmuseum;
+
 # devtron
 hasDevtron = kubectl get deployment devtron -n devtroncd;
 orchToken = shellScript passwordGen;
@@ -141,6 +161,45 @@ yamlEdit(devtron, "data.PG_PASSWORD", postgresqlPassword, 0);
 yamlEdit(devtron, "data.GIT_TOKEN", gitToken, 0);
 
 #fix this, as this will result in fields getting changed, if exists then we need to pull existing values and apply again
+
+# populate acd password
+allDevtroncdPo = kubectl get po -n devtroncd;
+argocdPodNameSelector = `items.#(metadata.labels.app\.kubernetes\.io/name=="argocd-server").metadata.name`;
+acdPassword = jsonSelect(allDevtroncdPo, argocdPodNameSelector);
+acdPassword = base64EncoderPrefix + `echo "` + acdPassword + `" | tr -d ':\n' ` + base64EncoderSuffix;
+acdPassword = shellScript acdPassword;
+
+if hasDevtron {
+	devtronSecret = kubectl get secret -n devtroncd get devtron-secret;
+	texternalCIAPISecret = jsonSelect(devtronSecret, "data.EXTERNAL_CI_API_SECRET");
+	if texternalCIAPISecret {
+		externalCIAPISecret = texternalCIAPISecret;
+	}
+	twebHookToken = jsonSelect(devtronSecret, "data.WEBHOOK_TOKEN");
+	if twebHookToken {
+		webHookToken = twebHookToken;
+	}
+	torchToken = jsonSelect(devtronSecret, "data.ORCH_TOKEN");
+	if torchToken {
+		orchToken = torchToken;
+	}
+	tdexSecret = jsonSelect(devtronSecret, "data.DEX_SECRET");
+	if tdexSecret {
+		dexSecret = tdexSecret;
+	}
+	tdexJwtKey = jsonSelect(devtronSecret, "data.DEX_JWTKEY");
+	if tdexJwtKey {
+		dexJwtKey = tdexJwtKey;
+	}
+	tdexCStoreKey = jsonSelect(devtronSecret, "data.DEX_CSTOREKEY");
+	if tdexCStoreKey {
+		dexCStoreKey = tdexCStoreKey;
+	}
+	tacdPassword = jsonSelect(devtronSecret, "data.ACD_PASSWORD");
+	if tacdPassword {
+		acdPassword = tacdPassword;
+	}
+}
 if !hasDevtron {
 	yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
 	yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
@@ -148,12 +207,6 @@ if !hasDevtron {
 	yamlEdit(devtron, "data.DEX_SECRET", dexSecret, 0);
 	yamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, 0);
 	yamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, 0);
-	# populate acd password
-	allDevtroncdPo = kubectl get po -n devtroncd;
-	argocdPodNameSelector = `items.#(metadata.labels.app\.kubernetes\.io/name=="argocd-server").metadata.name`;
-	acdPassword = jsonSelect(allDevtroncdPo, argocdPodNameSelector);
-	acdPassword = base64EncoderPrefix + `echo "` + acdPassword + `" | tr -d ':\n' ` + base64EncoderSuffix;
-	acdPassword = shellScript acdPassword;
 	yamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, 0);
 }
 
@@ -174,7 +227,6 @@ devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress;
 
 guard = kubectl apply -n devtroncd guard;
 dashboard = kubectl apply -n devtroncd dashboard;
-chartmuseum = kubectl apply -n devtroncd chartmuseum;
 
 gitSensorOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/gitsensor.yaml");
 gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;

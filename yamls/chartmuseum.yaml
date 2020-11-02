@@ -1,24 +1,34 @@
----
 # Source: chartmuseum/templates/secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: chartmuseum
+  name: devtron-chartmuseum
   labels:
     app: chartmuseum
-    chart: chartmuseum-2.14.0
+    chart: chartmuseum-2.13.2
     release: "devtron"
 type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devtron-chartmuseum
+  labels:
+    app: chartmuseum
+    chart: chartmuseum-2.13.2
+    release: "devtron"
 data:
+  CHARTMUSEUM_STORAGE: amazon
+  CHARTMUSEUM_STORAGE_AMAZON_PREFIX: "devtron-chartmuseum"
 ---
 # Source: chartmuseum/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: chartmuseum
+  name: devtron-chartmuseum
   labels:
     app: chartmuseum
-    chart: chartmuseum-2.14.0
+    chart: chartmuseum-2.13.2
     release: "devtron"
 spec:
   type: ClusterIP
@@ -35,12 +45,12 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chartmuseum
+  name: devtron-chartmuseum
   annotations:
     {}
   labels:
     app: chartmuseum
-    chart: chartmuseum-2.14.0
+    chart: chartmuseum-2.13.2
     release: "devtron"
 spec:
   selector:
@@ -55,7 +65,7 @@ spec:
   revisionHistoryLimit: 10
   template:
     metadata:
-      name: chartmuseum
+      name: devtron-chartmuseum
       annotations:
         {}
       labels:
@@ -63,18 +73,14 @@ spec:
         release: "devtron"
     spec:
       securityContext:
-        fsGroup: 1000      
+        fsGroup: 1000
       containers:
       - name: chartmuseum
         image: chartmuseum/chartmuseum:v0.12.0
         imagePullPolicy: IfNotPresent
-        securityContext:
-          {}
         env:
         - name: "CHART_POST_FORM_FIELD_NAME"
           value: "chart"
-        - name: "DISABLE_API"
-          value: "true"
         - name: "DISABLE_METRICS"
           value: "true"
         - name: "LOG_JSON"
@@ -82,10 +88,27 @@ spec:
         - name: "PROV_POST_FORM_FIELD_NAME"
           value: "prov"
         - name: "STORAGE"
-          value: "local"
+          valueFrom:
+            configMapRef:
+              name: devtron-chartmuseum
+              key: "CHARTMUSEUM_STORAGE"
+        - name: "STORAGE_AMAZON_BUCKET"
+          valueFrom:
+            configMapRef:
+              name: devtron-chartmuseum
+              key: "CHARTMUSEUM_STORAGE_AMAZON_BUCKET"
+        - name: "STORAGE_AMAZON_PREFIX"
+          valueFrom:
+            configMapRef:
+              name: devtron-chartmuseum
+              key: "CHARTMUSEUM_STORAGE_AMAZON_PREFIX"
+        - name: "STORAGE_AMAZON_REGION"
+          valueFrom:
+            configMapRef:
+              name: devtron-chartmuseum
+              key: "CHARTMUSEUM_STORAGE_AMAZON_REGION"
         args:
         - --port=8080
-        - --storage-local-rootdir=/storage
         ports:
         - name: http
           containerPort: 8080
@@ -108,8 +131,6 @@ spec:
           successThreshold: 1
           timeoutSeconds: 1
         volumeMounts:
-        - mountPath: /storage
-          name: storage-volume
       volumes:
       - name: storage-volume
         emptyDir: {}
