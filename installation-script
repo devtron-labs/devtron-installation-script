@@ -88,7 +88,7 @@ if hasArgocd {
 	if tbaseURL {
 		tbaseURL = baseURL;
 	}
-	tdexConfig = jsonSelect(argocdCM, "data.dex\.config");
+	tdexConfig = jsonSelect(argocdCM, `data.dex\.config`);
 	if tdexConfig {
 		dexConfig = tdexConfig;
 	}
@@ -148,7 +148,7 @@ yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStora
 chartmuseum = kubectl apply -n devtroncd chartmuseum;
 
 # devtron
-hasDevtron = kubectl get deployment devtron -n devtroncd;
+hasDevtron = kubectl get deployment "devtron" -n devtroncd;
 orchToken = shellScript passwordGen;
 webHookToken = shellScript passwordGen;
 dexSecret = shellScript passwordGen;
@@ -170,7 +170,7 @@ acdPassword = base64EncoderPrefix + `echo "` + acdPassword + `" | tr -d ':\n' ` 
 acdPassword = shellScript acdPassword;
 
 if hasDevtron {
-	devtronSecret = kubectl get secret -n devtroncd get devtron-secret;
+	devtronSecret = kubectl get secret -n devtroncd devtron-secret;
 	texternalCIAPISecret = jsonSelect(devtronSecret, "data.EXTERNAL_CI_API_SECRET");
 	if texternalCIAPISecret {
 		externalCIAPISecret = texternalCIAPISecret;

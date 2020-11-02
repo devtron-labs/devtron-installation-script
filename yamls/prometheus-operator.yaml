@@ -14915,7 +14915,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -14969,7 +14969,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-grafana-test
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -15037,7 +15037,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-prometheus-node-exporter
-  namespace: default
+  namespace: monitoring
   labels:     
     app: prometheus-node-exporter
     heritage: Helm
@@ -15092,7 +15092,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -15143,7 +15143,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-prometheus-operato-operator
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
@@ -15194,7 +15194,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-prometheus-operato-prometheus
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
@@ -15251,7 +15251,7 @@ metadata:
     app.kubernetes.io/version: "6.6.2"
     app.kubernetes.io/managed-by: Helm
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
 ---
 # Source: prometheus-operator/charts/grafana/templates/tests/test-serviceaccount.yaml
 apiVersion: v1
@@ -15264,7 +15264,7 @@ metadata:
     app.kubernetes.io/version: "6.6.2"
     app.kubernetes.io/managed-by: Helm
   name: devtron-grafana-test
-  namespace: default
+  namespace: monitoring
 ---
 # Source: prometheus-operator/charts/kube-state-metrics/templates/serviceaccount.yaml
 apiVersion: v1
@@ -15276,7 +15276,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/instance: devtron
   name: devtron-kube-state-metrics
-  namespace: default
+  namespace: monitoring
 imagePullSecrets:
   []
 ---
@@ -15285,7 +15285,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: devtron-prometheus-node-exporter
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-node-exporter
     chart: prometheus-node-exporter-1.9.0
@@ -15299,7 +15299,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -15314,7 +15314,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: devtron-prometheus-operato-operator
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
@@ -15329,7 +15329,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: devtron-prometheus-operato-prometheus
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
@@ -15344,7 +15344,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -15362,7 +15362,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: alertmanager-devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -15383,7 +15383,7 @@ metadata:
     app.kubernetes.io/version: "6.6.2"
     app.kubernetes.io/managed-by: Helm
   name: devtron-grafana-config-dashboards
-  namespace: default
+  namespace: monitoring
 data:
   provider.yaml: |-
     apiVersion: 1
@@ -15402,7 +15402,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -15437,7 +15437,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: devtron-grafana-test
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -15458,7 +15458,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: devtron-prometheus-operato-grafana-datasource
-  namespace: default
+  namespace: monitoring
   labels:
     grafana_datasource: "1"
     app: prometheus-operator-grafana
@@ -15480,7 +15480,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-apiserver
   labels:
     grafana_dashboard: "1"
@@ -16803,7 +16803,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-cluster-total
   labels:
     grafana_dashboard: "1"
@@ -18625,7 +18625,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-controller-manager
   labels:
     grafana_dashboard: "1"
@@ -19751,7 +19751,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-etcd
   labels:
     grafana_dashboard: "1"
@@ -20860,7 +20860,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-coredns
   labels:
     grafana_dashboard: "1"
@@ -22184,7 +22184,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-resources-cluster
   labels:
     grafana_dashboard: "1"
@@ -24761,7 +24761,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-resources-namespace
   labels:
     grafana_dashboard: "1"
@@ -27017,7 +27017,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-resources-node
   labels:
     grafana_dashboard: "1"
@@ -27973,7 +27973,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-resources-pod
   labels:
     grafana_dashboard: "1"
@@ -29717,7 +29717,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-resources-workload
   labels:
     grafana_dashboard: "1"
@@ -31724,7 +31724,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-k8s-resources-workloads-namespace
   labels:
     grafana_dashboard: "1"
@@ -33887,7 +33887,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-kubelet
   labels:
     grafana_dashboard: "1"
@@ -36377,7 +36377,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-namespace-by-pod
   labels:
     grafana_dashboard: "1"
@@ -37793,7 +37793,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-namespace-by-workload
   labels:
     grafana_dashboard: "1"
@@ -39473,7 +39473,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-node-cluster-rsrc-use
   labels:
     grafana_dashboard: "1"
@@ -40430,7 +40430,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-node-rsrc-use
   labels:
     grafana_dashboard: "1"
@@ -41414,7 +41414,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-nodes
   labels:
     grafana_dashboard: "1"
@@ -42394,7 +42394,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-persistentvolumesusage
   labels:
     grafana_dashboard: "1"
@@ -42960,7 +42960,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-pod-total
   labels:
     grafana_dashboard: "1"
@@ -44143,7 +44143,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-pods
   labels:
     grafana_dashboard: "1"
@@ -44816,7 +44816,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-prometheus
   labels:
     grafana_dashboard: "1"
@@ -46031,7 +46031,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-proxy
   labels:
     grafana_dashboard: "1"
@@ -47235,7 +47235,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-scheduler
   labels:
     grafana_dashboard: "1"
@@ -48286,7 +48286,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-statefulset
   labels:
     grafana_dashboard: "1"
@@ -49205,7 +49205,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: default
+  namespace: monitoring
   name: devtron-prometheus-operato-workload-total
   labels:
     grafana_dashboard: "1"
@@ -50933,7 +50933,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: devtron-grafana
-    namespace: default
+    namespace: monitoring
 roleRef:
   kind: ClusterRole
   name: devtron-grafana-clusterrole
@@ -50956,7 +50956,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: devtron-kube-state-metrics
-  namespace: default
+  namespace: monitoring
 ---
 # Source: prometheus-operator/charts/kube-state-metrics/templates/psp-clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -50975,7 +50975,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-kube-state-metrics
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/charts/prometheus-node-exporter/templates/psp-clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -50995,7 +50995,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-node-exporter
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/templates/prometheus-operator/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -51015,7 +51015,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: devtron-prometheus-operato-operator
-  namespace: default
+  namespace: monitoring
 ---
 # Source: prometheus-operator/templates/prometheus-operator/psp-clusterrolebinding.yaml
 kind: ClusterRoleBinding
@@ -51035,7 +51035,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-operato-operator
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/templates/prometheus/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -51055,7 +51055,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-operato-prometheus
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/templates/prometheus/psp-clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -51075,14 +51075,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-operato-prometheus
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/charts/grafana/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51100,7 +51100,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: devtron-grafana-test
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51118,7 +51118,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -51137,7 +51137,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51151,14 +51151,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
 ---
 # Source: prometheus-operator/charts/grafana/templates/tests/test-rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: devtron-grafana-test
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51172,14 +51172,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: devtron-grafana-test
-  namespace: default
+  namespace: monitoring
 ---
 # Source: prometheus-operator/templates/alertmanager/psp-rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -51193,14 +51193,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-operato-alertmanager
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/charts/grafana/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51224,7 +51224,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: devtron-kube-state-metrics
-  namespace: default
+  namespace: monitoring
   labels:
     app.kubernetes.io/name: kube-state-metrics
     helm.sh/chart: "kube-state-metrics-2.6.4"
@@ -51248,7 +51248,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: devtron-prometheus-node-exporter
-  namespace: default
+  namespace: monitoring
   annotations:
     prometheus.io/scrape: "true"
   labels:     
@@ -51273,7 +51273,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     self-monitor: "true"
@@ -51416,7 +51416,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: devtron-prometheus-operato-operator
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
@@ -51441,7 +51441,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: devtron-prometheus-operato-prometheus
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     self-monitor: "true"
@@ -51464,7 +51464,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: devtron-prometheus-node-exporter
-  namespace: default
+  namespace: monitoring
   labels:     
     app: prometheus-node-exporter
     heritage: Helm
@@ -51542,7 +51542,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51681,7 +51681,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: devtron-kube-state-metrics
-  namespace: default
+  namespace: monitoring
   labels:
     app.kubernetes.io/name: kube-state-metrics
     helm.sh/chart: "kube-state-metrics-2.6.4"
@@ -51803,7 +51803,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: devtron-prometheus-operato-operator
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
@@ -51890,7 +51890,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: devtron-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     helm.sh/chart: grafana-5.0.8
     app.kubernetes.io/name: grafana
@@ -51916,7 +51916,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -51967,7 +51967,7 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: default
+        namespace: monitoring
         name: devtron-prometheus-operato-operator
         path: /admission-prometheusrules/mutate
 ---
@@ -51976,7 +51976,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   name: devtron-prometheus-operato-prometheus
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
@@ -51986,7 +51986,7 @@ metadata:
 spec:
   alerting:
     alertmanagers:
-      - namespace: default
+      - namespace: monitoring
         name: devtron-prometheus-operato-alertmanager
         port: web
         pathPrefix: "/"
@@ -52031,7 +52031,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-alertmanager.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52072,7 +52072,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-etcd
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52202,7 +52202,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-general.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52242,7 +52242,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-k8s.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52353,7 +52353,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-apiserver-error-alerts
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52408,7 +52408,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-apiserver-error
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52537,7 +52537,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-apiserver.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52571,7 +52571,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-prometheus-general.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52592,7 +52592,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-prometheus-node-recording.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52623,7 +52623,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-scheduler.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52676,7 +52676,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kube-state-metrics
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52717,7 +52717,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubelet.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52746,7 +52746,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-absent
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -52835,7 +52835,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-apps
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53029,7 +53029,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-resources
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53122,7 +53122,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-storage
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53174,7 +53174,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-system-apiserver
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53281,7 +53281,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-system-controller-manager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53306,7 +53306,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-system-kubelet
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53379,7 +53379,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-system-scheduler
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53404,7 +53404,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-kubernetes-system
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53441,7 +53441,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-node-exporter.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53510,7 +53510,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-node-exporter
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53702,7 +53702,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-node-network
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53726,7 +53726,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-node-time
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53750,7 +53750,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-node.rules
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53793,7 +53793,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-prometheus-operator
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -53824,7 +53824,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: devtron-prometheus-operato-prometheus
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator
     
@@ -54014,7 +54014,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-alertmanager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-alertmanager
     
@@ -54039,7 +54039,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-coredns
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-coredns
     
@@ -54064,7 +54064,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-apiserver
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-apiserver
     
@@ -54094,7 +54094,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-kube-controller-manager
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-kube-controller-manager
     
@@ -54119,7 +54119,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-kube-etcd
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-kube-etcd
     
@@ -54144,7 +54144,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-kube-proxy
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-kube-proxy
     
@@ -54169,7 +54169,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-kube-scheduler
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-kube-scheduler
     
@@ -54194,7 +54194,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-kube-state-metrics
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-kube-state-metrics
     
@@ -54216,7 +54216,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-kubelet
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-kubelet
     
@@ -54261,7 +54261,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-node-exporter
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-node-exporter
     
@@ -54282,7 +54282,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-grafana
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-grafana
     
@@ -54306,7 +54306,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-operator
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-operator
     
@@ -54330,7 +54330,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: devtron-prometheus-operato-prometheus
-  namespace: default
+  namespace: monitoring
   labels:
     app: prometheus-operator-prometheus
     
@@ -54375,7 +54375,7 @@ webhooks:
           - UPDATE
     clientConfig:
       service:
-        namespace: default
+        namespace: monitoring
         name: devtron-prometheus-operato-operator
         path: /admission-prometheusrules/validate
 ---
@@ -54392,7 +54392,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   annotations:
     "helm.sh/hook": test-success
-  namespace: default
+  namespace: monitoring
 spec:
   serviceAccountName: devtron-grafana-test
   containers:
@@ -54442,7 +54442,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name:  devtron-prometheus-operato-admission
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -54458,14 +54458,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-operato-admission
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/templates/prometheus-operator/admission-webhooks/job-patch/job-createSecret.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
   name:  devtron-prometheus-operato-admission-create
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -54506,7 +54506,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name:  devtron-prometheus-operato-admission-patch
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -54548,7 +54548,7 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: devtron-prometheus-operato-admission
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -54602,7 +54602,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name:  devtron-prometheus-operato-admission
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -54625,7 +54625,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name:  devtron-prometheus-operato-admission
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -54641,14 +54641,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: devtron-prometheus-operato-admission
-    namespace: default
+    namespace: monitoring
 ---
 # Source: prometheus-operator/templates/prometheus-operator/admission-webhooks/job-patch/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name:  devtron-prometheus-operato-admission
-  namespace: default
+  namespace: monitoring
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded

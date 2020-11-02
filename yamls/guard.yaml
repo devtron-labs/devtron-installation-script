@@ -1,4 +1,3 @@
----
 # Source: guard/templates/secret.yaml
 apiVersion: v1
 kind: Secret
