@@ -20,11 +20,8 @@ data:
   CD_NAMESPACE: "devtroncd"
   EVENT_URL: "http://notifier-service.devtroncd:80/notify"
   GIT_SENSOR_URL: "http://git-sensor-service.devtroncd:80"
-  GIT_SENSOR_TIMEOUT: "300" 
-  GRAFANA_USERNAME: "admin" 
-  GRAFANA_PASSWORD: "prom-operator"
+  GIT_SENSOR_TIMEOUT: "300"
   GRAFANA_ORG_ID: "2"
-  GRAFANA_URL: ""
   LENS_URL: "http://lens-service.devtroncd:80"
   LENS_TIMEOUT: "300"
   NATS_SERVER_HOST: "nats://devtron-nats.devtroncd:4222"
@@ -159,7 +156,7 @@ spec:
       serviceAccountName: devtron
       containers:
         - name: devtron
-          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/devtron:fbdcc5a6-127-2150"
+          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/devtron:6454f3fb-127-2173"
           imagePullPolicy: IfNotPresent
           ports:
             - name: devtron
