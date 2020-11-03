@@ -83,6 +83,13 @@ data:
   CExpirationTime: "600"
   JwtExpirationTime: "120"
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devtron-cluster-components
+  labels:
+    release: devtron
+---
 # Source: devtron/templates/service.yaml
 apiVersion: v1
 kind: Service
@@ -181,8 +188,13 @@ spec:
             requests:
               cpu: "0.2"
               memory: 100Mi
-          volumeMounts: []
-      volumes: []
+          volumeMounts:
+            - mountPath: /cluster/component
+              name: devtron-cluster-components-vol
+      volumes:
+        - configMap:
+            name: devtron-cluster-components
+          name: devtron-cluster-components-vol
   revisionHistoryLimit: 3
 ---
 # Source: devtron/templates/servicemonitor.yaml
