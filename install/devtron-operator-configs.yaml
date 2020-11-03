@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: devtron-operator-secret
+type: Opaque
+data:
+  POSTGRESQL_PASSWORD: Y2hhbmdlX21l
+  ACD_PASSWORD: Y2hhbmdlX21l
+  GIT_TOKEN: Y2hhbmdlX21l
+  WEBHOOK_TOKEN: Y2hhbmdlX21l
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devtron-operator-cm
+data:
+  BASE_URL: "http://change-me"
+  DEX_CONFIG: "change-me"
+  GITLAB_NAMESPACE_ID: "change-me"
+  GITLAB_NAMESPACE_NAME: "change-me" 
+  GIT_USERNAME: "change-me"
+  GITHUB_ORGANIZATION: "change-me"
+  # GITHUB OR GITLAB
+  GIT_PROVIDER: "GITHUB"
+  DEFAULT_CD_LOGS_BUCKET_REGION: "change-me"
+  DEFAULT_CACHE_BUCKET: "change-me"
+  DEFAULT_CACHE_BUCKET_REGION: "change-me"
+  DEFAULT_BUILD_LOGS_BUCKET: "change-me"
+  CHARTMUSEUM_STORAGE_AMAZON_BUCKET: ""
+  CHARTMUSEUM_STORAGE_AMAZON_REGION: ""
+  EXTERNAL_SECRET_AMAZON_REGION: ""
