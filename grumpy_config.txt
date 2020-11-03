@@ -9,7 +9,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
 
 [ alt_names ]
-DNS.1 = guard-srevice
-DNS.2 = guard-srevice.devtroncd
-DNS.3 = guard-srevice.devtroncd.svc
-DNS.4 = guard-srevice.devtroncd.svc.cluster.local
+DNS.1 = guard-service
+DNS.2 = guard-service.devtroncd
+DNS.3 = guard-service.devtroncd.svc
+DNS.4 = guard-service.devtroncd.svc.cluster.local
