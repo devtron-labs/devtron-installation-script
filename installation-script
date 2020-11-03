@@ -210,6 +210,7 @@ if hasDevtron {
 	}
 }
 
+
 yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
 yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
 yamlEdit(devtron, "data.ORCH_TOKEN", orchToken, 0);
@@ -230,6 +231,12 @@ yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, 1);
 yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, 1);
 yamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, 1);
 yamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, 1);
+
+externaSecretRegion = `env:
+  AWS_REGION: ` + externalSecretAmazonRegion;
+
+yamlEdit(devtron, `data.dt-k8s-external-secret\.yaml`, externaSecretRegion, 2);
+
 devtronOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/devtron.yaml");
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress;
