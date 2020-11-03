@@ -154,7 +154,7 @@ yamlEdit(guard, `data.key\.pem`, key, 0);
 #chartmuseum
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, 1);
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, 1);
-chartmuseum = kubectl apply -n devtroncd chartmuseum;
+#chartmuseum = kubectl apply -n devtroncd chartmuseum;
 
 # devtron
 hasDevtron = kubectl get deployment "devtron" -n devtroncd;

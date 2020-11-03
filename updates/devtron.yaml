@@ -29,3 +29,12 @@ update:
     DEFAULT_ARTIFACT_KEY_LOCATION: "devtron/ci-artifacts"
     EXTERNAL_CI_PAYLOAD: "{\"ciProjectDetails\":[{\"gitRepository\":\"https://github.com/srj92/getting-started-nodejs.git\",\"checkoutPath\":\"./abc\",\"commitHash\":\"239077135f8cdeeccb7857e2851348f558cb53d3\",\"commitTime\":\"2019-10-31T20:55:21+05:30\",\"branch\":\"master\",\"message\":\"Update README.md\",\"author\":\"Devtron Labs \"}],\"dockerImage\":\"445808685819.dkr.ecr.us-east-2.amazonaws.com/orch:23907713-2\",\"digest\":\"test1\",\"dataSource\":\"ext\",\"materialType\":\"git\"}"
     ECR_REPO_NAME_PREFIX: "devtron/"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: devtron-secret
+#update:
+#  data:
+#    GRAFANA_PASSWORD: "ssas"
+#    GRAFANA_USERNAME: "admin"
