@@ -32,3 +32,10 @@ metadata:
   name: argo
   labels:
     name: devtron
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devtron-demo
+  labels:
+    name: devtron
