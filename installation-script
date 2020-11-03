@@ -60,15 +60,12 @@ devtron = download("https://raw.githubusercontent.com/pghildiyal/devtron-install
 devtronDexIngress = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
 workflow = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/workflow.yaml");
 serviceAccount = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/serviceaccount.yaml");
-prometheusOperator = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/prometheus-operator.yaml");
 namespace = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/namespace.yaml");
 externalSecret = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/yamls/namespace.yaml");
 
 namespaces = kubectl apply namespace;
 sa = kubectl apply serviceAccount;
 
-#prometheus operator
-#prometheusoperator = kubectl apply -n monitoring prometheusOperator;
 
 #externalSecret
 yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
@@ -86,18 +83,24 @@ if !hasPostgresql {
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 argocdOverride = download("https://raw.githubusercontent.com/pghildiyal/devtron-installation-script/main/updates/argocd.yaml");
 #if argocd present then dont patch
-if hasArgocd {
-	argocdCM = kubectl get cm argocd-cm -n devtroncd;
-	tbaseURL = jsonSelect(argocdCM, "data.url");
-	if tbaseURL {
-		tbaseURL = baseURL;
-	}
-	tdexConfig = jsonSelect(argocdCM, `data.dex\.config`);
-	if tdexConfig {
-		dexConfig = tdexConfig;
-	}
-}
+#if hasArgocd {
+#	argocdCM = kubectl get cm argocd-cm -n devtroncd;
+#	tbaseURL = jsonSelect(argocdCM, "data.url");
+#	if tbaseURL {
+#		baseURL = tbaseURL;
+#	}
+#	tdexConfig = jsonSelect(argocdCM, `data.dex\.config`);
+#	if tdexConfig {
+#		dexConfig = tdexConfig;
+#	}
+#}
 
+helmRepo = `- name: incubator
+  url: https://kubernetes-charts-incubator.storage.googleapis.com
+- name: devtron-charts
+  url: https://devtron-charts.s3.us-east-2.amazonaws.com/charts`;
+
+yamlEdit(argocd, `data.helm\.repositories`, helmRepo, 15);
 yamlEdit(argocd, "data.url", baseURL, 15);
 yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
 # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
