@@ -94,7 +94,7 @@ spec:
             - -alsologtostderr
             - --log_dir=/
             - -v=10
-            - --validator_url=http://orchestrator-devtroncd-service.devtroncd:80
+            - --validator_url=http://devtron-service.devtroncd:80
             - 2>&1
           env:
             - name: CONFIG_HASH
