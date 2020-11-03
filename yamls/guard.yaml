@@ -127,3 +127,22 @@ spec:
           secret:
             secretName: guard-secret
   revisionHistoryLimit: 3
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: grumpy
+webhooks:
+  - name: grumpy.pipo02mix.org
+    clientConfig:
+      service:
+        name: guard-service
+        namespace: devtroncd
+        path: "/validate"
+      caBundle: ""
+    rules:
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    failurePolicy: Ignore
