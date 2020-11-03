@@ -16,7 +16,7 @@ openssl req -new -x509 -key /tmp/certs/ca.key -out /tmp/certs/ca.crt -config /tm
 openssl genrsa -out /tmp/certs/grumpy-key.pem 2048
 
 # CREATE A CSR FROM THE CONFIGURATION FILE AND OUR PRIVATE KEY
-openssl req -new -key /tmp/certs/grumpy-key.pem -subj "/CN=guard-srevice.devtroncd.svc" -out /tmp/grumpy.csr -config /tmp/certs/grumpy_config.txt
+openssl req -new -key /tmp/certs/grumpy-key.pem -subj "/CN=guard-service.devtroncd.svc" -out /tmp/grumpy.csr -config /tmp/certs/grumpy_config.txt
 
 # CREATE THE CERT SIGNING THE CSR WITH THE CA CREATED BEFORE
 openssl x509 -req -in /tmp/grumpy.csr -CA /tmp/certs/ca.crt -CAkey /tmp/certs/ca.key -CAcreateserial -out /tmp/certs/grumpy-crt.pem
