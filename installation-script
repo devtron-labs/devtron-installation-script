@@ -63,25 +63,46 @@ serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtro
 namespace = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/namespace.yaml");
 externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/namespace.yaml");
 
-#namespaces = kubectl apply namespace;
-#sa = kubectl apply serviceAccount;
+
+postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
+argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
+devtronOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/devtron.yaml");
+gitSensorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/gitsensor.yaml");
+imageScannerOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/image-scanner.yaml");
+lensOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/lens.yaml");
+notifierOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/notifier.yaml");
+
+chartmuseumOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/chartmuseum.yaml");
+clairOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/clair.yaml");
+dashboardOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/dashboard.yaml");
+guardOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/guard.yaml");
+kubewatchOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/kubewatch.yaml");
+migratorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/migrator.yaml");
+natsOperatorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/nats-operator.yaml");
+natsServerOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/nats-server.yaml");
+natsStreamingOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/nats-streaming.yaml");
+devtronDexIngressOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/updates/yamls/devtron-dex-ingress.yaml");
+workflowOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/workflow.yaml");
+externalSecretOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/namespace.yaml");
+
+namespaces = kubectl apply namespace;
+sa = kubectl apply serviceAccount;
 
 
 #externalSecret
 yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
-#externalSecret = kubectl apply -n devtroncd externalSecret;
+externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
 
 #postgresql
 # if postgres already installed skip installation
 hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
-	postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
 	yamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, 0);
-#	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
+	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 }
 #argocd
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
-argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
+
 #if argocd present then dont patch
 #if hasArgocd {
 #	argocdCM = kubectl get cm argocd-cm -n devtroncd;
@@ -108,7 +129,7 @@ yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
 
 yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 14);
 yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
-#argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
+argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
@@ -129,12 +150,12 @@ yamlEdit(lens, "data.PG_PASSWORD", postgresqlPassword, 0);
 #migrator
 #delete migrator job
 yamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, 0);
-#migrator = kubectl apply -n devtroncd migrator;
+migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
 
 #nats
-#natsOperator = kubectl apply -n devtroncd natsOperator;
-#natsServer = kubectl apply -n devtroncd natsServer;
-#natsStreaming = kubectl apply -n devtroncd natsStreaming;
+natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
+natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
+natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
 
 #guard
 makeCertsDir = `#!/bin/bash
@@ -157,7 +178,7 @@ yamlEdit(guard, "webhooks.0.clientConfig.caBundle", cacrt, 4);
 #chartmuseum
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, 1);
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, 1);
-#chartmuseum = kubectl apply -n devtroncd chartmuseum;
+chartmuseum = kubectl apply -n devtroncd chartmuseum -u chartmuseumOverride;
 
 # devtron
 hasDevtron = kubectl get deployment "devtron" -n devtroncd;
@@ -240,22 +261,17 @@ externaSecretRegion = `env:
 
 yamlEdit(devtron, `data.dt-k8s-external-secret\.yaml`, externaSecretRegion, 2);
 
-devtronOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/devtron.yaml");
-#devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
-#devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress;
+devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
+devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
 
-#guard = kubectl apply -n devtroncd guard;
-#dashboard = kubectl apply -n devtroncd dashboard;
+guard = kubectl apply -n devtroncd guard -u guardOverride;
+dashboard = kubectl apply -n devtroncd dashboard -u dashboardOverride;
 
-gitSensorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/gitsensor.yaml");
-#gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
-imageScannerOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/image-scanner.yaml");
-#imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
-#kubewatch = kubectl apply -n devtroncd kubewatch;
-lensOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/lens.yaml");
-#lens = kubectl apply -n devtroncd lens -u lensOverride;
-notifierOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/notifier.yaml");
-#notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
+gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
+imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
+kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
+lens = kubectl apply -n devtroncd lens -u lensOverride;
+notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
 
 workflowConfig = `parallelism: 50
 artifactRepository:
@@ -273,7 +289,7 @@ containerRuntimeExecutor: pns
 executor:
   imagePullPolicy: Always`;
 yamlEdit(workflow, "data.config", workflowConfig, 10);
-#workflow = kubectl apply -n argo workflow;
+workflow = kubectl apply -n argo workflow -u workflowOverride;
 
 postgresPlainPwd = base64DecoderPrefix + `echo "` + postgresqlPassword + `" | tr -d ':\n' ` + base64DecoderSuffix;
 postgresPlainPwd = shellScript postgresPlainPwd;
@@ -282,4 +298,4 @@ yamlEdit(clairConfig, "clair.database.options.source", clairPosrgresUrl, 0);
 clairEncodedConfig = base64EncoderPrefix + `echo "` + clairConfig + `"` + base64EncoderSuffix;
 clairEncodedConfig = shellScript clairEncodedConfig;
 yamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, 0);
-#clair = kubectl apply -n devtroncd clair;
+clair = kubectl apply -n devtroncd clair -u clairOverride;
