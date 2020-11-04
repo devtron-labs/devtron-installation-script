@@ -156,7 +156,7 @@ spec:
       serviceAccountName: devtron
       containers:
         - name: devtron
-          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/devtron:6454f3fb-127-2173"
+          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/devtron:3f12bbc5-127-2180"
           imagePullPolicy: IfNotPresent
           ports:
             - name: devtron
