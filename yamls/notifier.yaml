@@ -40,33 +40,6 @@ spec:
   selector:
     app: notifier
 ---
-# Source: notifier/templates/ingress.yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: notifier-ingress
-  namespace: 
-  labels:
-    app: notifier
-    chart: notifier-3.7.1
-    release: devtron
-  annotations:
-    nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,token,
-      content-type, Access-Control-Allow-Origin,Access-Control-Allow-Credentials
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-
-spec:
-  rules:
-  - host: 
-    http:
-      paths:
-        - path: /notifier(/|$)(.*)
-          backend:
-            serviceName: notifier-service
-            servicePort: 80
----
 # Source: notifier/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -93,7 +66,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: notifier
-          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/release/notifier:75c88932-74-1077"
+          image: quay.io/devtron/notifier:3b7b5d33-74-2197
           imagePullPolicy: IfNotPresent
           ports:
             - name: app

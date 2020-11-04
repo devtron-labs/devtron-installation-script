@@ -54,7 +54,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: git-sensor
-          image: 686244538589.dkr.ecr.us-east-2.amazonaws.com/release/git-sensor:81173eda-17-223
+          image: quay.io/devtron/git-sensor:8badb037-121-2189
           ports:
             - containerPort: 8080
               name: sensor
