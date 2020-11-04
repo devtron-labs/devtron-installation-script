@@ -261,7 +261,7 @@ spec:
             - name: envoy-config-volume
               mountPath: /etc/envoy-config/
         - name: dashboard
-          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/release/dashboard:f159ee76-6-1949"
+          image: "quay.io/devtron/dashboard:5896c5a5-6-2195"
           imagePullPolicy: IfNotPresent
           ports:
             - name: app
@@ -317,4 +317,4 @@ spec:
       app: dashboard
   namespaceSelector:
     matchNames:
-      - devtroncd
+      - devtroncd:w
