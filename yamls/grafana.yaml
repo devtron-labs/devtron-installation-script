@@ -4,7 +4,7 @@ metadata:
   name: devtron-grafana-cred-secret
 type: Opaque
 data:
-  admin-user: admin
+  admin-user: YWRtaW4=
 ---
 # Source: grafana/templates/podsecuritypolicy.yaml
 apiVersion: policy/v1beta1

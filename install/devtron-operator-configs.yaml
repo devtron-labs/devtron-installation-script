@@ -6,7 +6,6 @@ metadata:
 type: Opaque
 data:
   POSTGRESQL_PASSWORD: Y2hhbmdlX21l
-  ACD_PASSWORD: Y2hhbmdlX21l
   GIT_TOKEN: Y2hhbmdlX21l
   WEBHOOK_TOKEN: Y2hhbmdlX21l
 ---
@@ -17,7 +16,7 @@ metadata:
   namespace: devtroncd
 data:
   BASE_URL_SCHEME: "http"
-  #url without scheme
+  #url without scheme and without trailing '/'
   BASE_URL: "change-me"
   DEX_CONFIG: "change-me"
   GITLAB_NAMESPACE_ID: "change-me"
