@@ -172,17 +172,6 @@ data:
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
-  dashboardproviders.yaml: |
-    apiVersion: 1
-    providers:
-    - disableDeletion: true
-      editable: false
-      folder: ""
-      name: devtron-provider
-      options:
-        path: /var/lib/grafana/dashboards/devtron-provider
-      orgId: 2
-      type: file
   download_dashboards.sh: |
     #!/usr/bin/env sh
     set -euf
