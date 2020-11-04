@@ -253,7 +253,7 @@ spec:
     spec:
       containers:
         -
-          image: '686244538589.dkr.ecr.us-east-2.amazonaws.com/devtron:3ff97234-130-2178'
+          image: quay.io/devtron/inception:3ff97234-130-2201
           imagePullPolicy: IfNotPresent
           name: inception
           ports:

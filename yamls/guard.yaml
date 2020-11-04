@@ -84,7 +84,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: guard
-          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/release/guard:4bea84da-113-1767"
+          image: quay.io/devtron/guard:62058d7c-122-2192
           imagePullPolicy: IfNotPresent
           ports:
             - name: app

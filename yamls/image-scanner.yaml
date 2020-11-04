@@ -69,7 +69,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: image-scanner
-          image: "686244538589.dkr.ecr.us-east-2.amazonaws.com/release/image-scanner:aa3386b4-112-2002"
+          image: quay.io/devtron/imge-scanner:0c6ce5c2-123-2193
           imagePullPolicy: IfNotPresent
           ports:
             - name: app
