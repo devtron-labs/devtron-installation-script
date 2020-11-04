@@ -6,6 +6,16 @@ metadata:
   labels:
     app: git-sensor
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: git-sensor-cm
+  labels:
+    app: git-sensor
+data:
+  PG_ADDR: postgresql-postgresql.devtroncd
+  PG_USER: postgres
+---
 # Source: gitsensor/templates/generic.yaml
 apiVersion: v1
 kind: Service
@@ -51,12 +61,11 @@ spec:
           volumeMounts:
             - name: git-volume
               mountPath: /git-base/
-          env:
-            - name: PG_ADDR
-              value: "postgresql-postgresql.devtroncd"
           envFrom:
           - secretRef:
               name: git-sensor-secret
+          - configMapRef: 
+              name: git-sensor-cm
   volumeClaimTemplates:
     - metadata:
         name: git-volume
