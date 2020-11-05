@@ -1,4 +1,5 @@
 
+
 [![Join Discord](https://img.shields.io/badge/Join%20us%20on-Discord-e01563.svg)](https://discord.gg/72JDKy4)
 
 # Devtron Installation
@@ -40,12 +41,13 @@ If you don't want to install helm on your cluster and just want to use `kubectl`
 
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
-$ cd devtron-installation-script/charts/template
-$ kubectl apply -n devtroncd -f charts/template/install.yaml
+$ cd devtron-installation-script/charts/
+$ kubectl apply devtron/templates/1-namespace.yaml
+$ kubectl apply -n devtroncd -f devtron/templates/install.yaml
 $ # wait for it to finish
-$ #edit charts/template/configmap-secret.yaml
-$ kubectl apply -n devtroncd -f charts/template/configmap-secret.yaml
-$ kubectl apply -n devtroncd -f charts/template/devtron-installer.yaml
+$ #edit devtron/templates/configmap-secret.yaml
+$ kubectl apply -n devtroncd -f devtron/templates/configmap-secret.yaml
+$ kubectl apply -n devtroncd -f devtron/templates/devtron-installer.yaml
 ```
 ### Access devtron dashboard
 
@@ -54,6 +56,10 @@ devtron dashboard in now available at the `BASE_URL/dashboard`, where `BASE_URL`
 For login use username:`admin` and for password run command mentioned below.
 ```bash
 $ kubectl -n devtroncd get secret devtron-secret -o jsonpath='{.data.ACD_PASSWORD}' | base64 -d
+```
+To log into grafana use username: `admin` and for password run command mentioned below.
+```bash
+$ kubectl -n devtroncd get secret devtron-grafana-cred-secret -o jsonpath='{.data.admin-password}' | base64 -d
 ```
 ### Configuration
 
@@ -103,4 +109,3 @@ example of DEX_CONFIG is
 
 **Please Note:**
 Ensure that the cluster has access to the DEFAULT_CACHE_BUCKET, DEFAULT_BUILD_LOGS_BUCKET, CHARTMUSEUM_STORAGE_AMAZON_BUCKET and AWS secrets backends (SSM & secrets manager)
-
