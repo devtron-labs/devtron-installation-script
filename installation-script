@@ -71,6 +71,7 @@ serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtro
 namespace = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/namespace.yaml");
 externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/external-secret.yaml");
 grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
+rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
 
 
 postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
@@ -93,6 +94,7 @@ devtronDexIngressOverride = download("https://raw.githubusercontent.com/devtron-
 workflowOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/workflow.yaml");
 externalSecretOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/external-secret.yaml");
 grafanaOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/grafana.yaml");
+rolloutOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/rollout.yaml");
 
 #grafana
 grafanaSecret = kubectl get -n devtroncd secret devtron-grafana-cred-secret;
@@ -229,6 +231,8 @@ argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
+#rollout
+rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
 
 #git-sensor
 yamlEdit(gitSensor, "data.PG_PASSWORD", postgresqlPassword, 0);
