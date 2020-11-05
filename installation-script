@@ -28,6 +28,8 @@ openssl rand -base64 20 | base64 | tr -d ':\n' | tr -d '=' | base64 | tr -d ':\n
 
 shebang = `#!/bin/bash 
 `;
+sleep50 = shebang + `
+sleep 50`;
 
 base64EncoderPrefix = `#!/bin/bash 
 `;
@@ -137,73 +139,79 @@ yamlEdit(grafana, `data.grafana\.ini`, grafanaIni, 6);
 grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
 log("setup grafana");
 
-createOrgScript = shebang + `
-sleep 50
-ORG_ID=$( curl -d '{"name":"devtron-metrics-view"}' -H "Content-Type: application/json" -X POST '` + grafanaUrlWithPwd + `/api/orgs' )
-echo $ORG_ID
-`;
-createOrg = shellScript createOrgScript;
-log("created org " + createOrg);
+if !hasgrafana {
+	createOrgScript = shebang + `
+	sleep 50
+	ORG_ID=$( curl -d '{"name":"devtron-metrics-view"}' -H "Content-Type: application/json" -X POST '` + grafanaUrlWithPwd + `/api/orgs' )
+	echo $ORG_ID
+	`;
+	createOrg = shellScript createOrgScript;
+	log("created org " + createOrg);
 
-orgId = jsonSelect(createOrg, "orgId");
-activeOrgScript = shebang + `
-curl -X POST '` + grafanaUrlWithPwd + `/api/user/using/` + orgId +`'`;
-activeOrg = shellScript activeOrgScript;
-log("activated org");
+	orgId = jsonSelect(createOrg, "orgId");
+	if !orgId {
+		orgId = "2";
+	}
 
-setPreferenceScript = shebang + `
-curl -X PUT -H "Content-Type: application/json" -d '{"homeDashboardId":0,"theme":"light","timezone":"browser"}' '`+ grafanaUrlWithPwd + `/api/org/preferences'`;
-setPreference = shellScript setPreferenceScript;
-log("set preference");
+	activeOrgScript = shebang + `
+	curl -X POST '` + grafanaUrlWithPwd + `/api/user/using/` + orgId +`'`;
+	activeOrg = shellScript activeOrgScript;
+	log("activated org");
 
-prometheusDatasourceScript = shebang + `
-curl '` + grafanaUrlWithPwd + `/api/datasources' \
--H 'content-type: application/json' \
--H 'x-grafana-org-id: ` + orgId + `' \
---data-raw '{"name":"Prometheus-devtron","type":"prometheus","access":"proxy","isDefault":true}'
-`;
-prometheusDatasource = shellScript prometheusDatasourceScript;
-log("data source setup step 1");
+	setPreferenceScript = shebang + `
+	curl -X PUT -H "Content-Type: application/json" -d '{"homeDashboardId":0,"theme":"light","timezone":"browser"}' '`+ grafanaUrlWithPwd + `/api/org/preferences'`;
+	setPreference = shellScript setPreferenceScript;
+	log("set preference");
 
-datasourceId = jsonSelect(prometheusDatasource, "datasource.id");
-log("datasource id " + datasourceId);
+	prometheusDatasourceScript = shebang + `
+	curl '` + grafanaUrlWithPwd + `/api/datasources' \
+	-H 'content-type: application/json' \
+	-H 'x-grafana-org-id: ` + orgId + `' \
+	--data-raw '{"name":"Prometheus-devtron","type":"prometheus","access":"proxy","isDefault":true}'
+	`;
+	prometheusDatasource = shellScript prometheusDatasourceScript;
+	log("data source setup step 1");
 
-prometheusDatasourceScriptUpdate = shebang + `
-curl '` + grafanaUrlWithPwd + `/api/datasources/` + datasourceId + `' -X PUT \
--H 'content-type: application/json' \
--H 'x-grafana-org-id: ` + orgId + `' \
---data-raw '{"id":` + datasourceId +` ,
-"orgId":` + orgId + `,
-"name":"Prometheus-devtron","type":"prometheus","access":"proxy",
-"url":"` + prometheusUrl + `",
-"basicAuth":true,"jsonData":{},"version":1}'
-`;
-prometheusDatasourceUpdate = shellScript prometheusDatasourceScriptUpdate;
-log("data source setup step 2");
+	datasourceId = jsonSelect(prometheusDatasource, "datasource.id");
+	log("datasource id " + datasourceId);
 
-grafanaDashboardProvider = `
-apiVersion: 1
-providers:
-- disableDeletion: true
-  editable: false
-  folder: ""
-  name: devtron-provider
-  options:
-    path: /var/lib/grafana/dashboards/devtron-provider
-  orgId: `+ orgId + `
-  type: file
- `;
+	prometheusDatasourceScriptUpdate = shebang + `
+	curl '` + grafanaUrlWithPwd + `/api/datasources/` + datasourceId + `' -X PUT \
+	-H 'content-type: application/json' \
+	-H 'x-grafana-org-id: ` + orgId + `' \
+	--data-raw '{"id":` + datasourceId +` ,
+	"orgId":` + orgId + `,
+	"name":"Prometheus-devtron","type":"prometheus","access":"proxy",
+	"url":"` + prometheusUrl + `",
+	"basicAuth":true,"jsonData":{},"version":1}'
+	`;
+	prometheusDatasourceUpdate = shellScript prometheusDatasourceScriptUpdate;
+	log("data source setup step 2");
 
-grafanaCm = kubectl get -n devtroncd cm devtron-grafana;
-jsonEdit(grafanaCm, `data.dashboardproviders\.yaml`, grafanaDashboardProvider);
-grafanaCm = kubectl apply -n devtroncd grafanaCm;
-log("setup up grafana cm with provider yaml");
+	grafanaDashboardProvider = `
+	apiVersion: 1
+	providers:
+	- disableDeletion: true
+	  editable: false
+	  folder: ""
+	  name: devtron-provider
+	  options:
+	    path: /var/lib/grafana/dashboards/devtron-provider
+	  orgId: `+ orgId + `
+	  type: file
+	 `;
 
-allDevtroncdPo = kubectl get po -n devtroncd;
-grafanaPodnamePattern = `items.#(metadata.name%"devtron-grafana*").metadata.name`;
-grafanaPodname = jsonSelect(allDevtroncdPo, grafanaPodnamePattern);
-grafanaPoddelete = kubectl delete -n devtroncd po grafanaPodname;
-log("deleted grafana pod to reload configmap");
+	grafanaCm = kubectl get -n devtroncd cm devtron-grafana;
+	jsonEdit(grafanaCm, `data.dashboardproviders\.yaml`, grafanaDashboardProvider);
+	grafanaCm = kubectl apply -n devtroncd grafanaCm;
+	log("setup up grafana cm with provider yaml");
+
+	allDevtroncdPo = kubectl get po -n devtroncd;
+	grafanaPodnamePattern = `items.#(metadata.name%"devtron-grafana*").metadata.name`;
+	grafanaPodname = jsonSelect(allDevtroncdPo, grafanaPodnamePattern);
+	grafanaPoddelete = kubectl delete -n devtroncd po grafanaPodname;
+	log("deleted grafana pod to reload configmap");
+}
 
 namespaces = kubectl apply namespace;
 log("created namespaces");
@@ -211,6 +219,8 @@ sa = kubectl apply serviceAccount;
 log("created service account");
 
 #externalSecret
+externalSecretAmazonRegion = base64EncoderPrefix + `echo "` + externalSecretAmazonRegion + `" | tr -d ':\n' ` + base64EncoderSuffix;
+externalSecretAmazonRegion = shellScript externalSecretAmazonRegion;
 yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
 externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
 log("created external secret");
@@ -271,6 +281,7 @@ log("executed migrator setup command");
 #nats
 natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
 log("executed nats operator setup");
+ignore = shellScript sleep50;
 natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
 log("executed nats server setup");
 natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
