@@ -190,6 +190,8 @@ spec:
               value: postgresql-postgresql.devtroncd
             - name: PG_DATABASE
               value: orchestrator
+            - name: PG_USER
+              value: postgres
             envFrom:
             - secretRef:
                 name: devtron-secret
@@ -212,6 +214,8 @@ spec:
           value: postgresql-postgresql.devtroncd
         - name: PG_DATABASE
           value: orchestrator
+        - name: PG_USER
+          value: postgres
         envFrom:
         - secretRef:
             name: devtron-secret
