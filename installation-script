@@ -28,7 +28,7 @@ openssl rand -base64 20 | base64 | tr -d ':\n' | tr -d '=' | base64 | tr -d ':\n
 
 shebang = `#!/bin/bash 
 `;
-sleet50 = shebang + `
+sleep50 = shebang + `
 sleep 50`;
 
 base64EncoderPrefix = `#!/bin/bash 
