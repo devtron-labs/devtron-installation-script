@@ -1,0 +1,28 @@
+#Use secrets in plaintext, they'll be encoded to base64 automatically.
+secrets:
+  data:
+  - key: POSTGRESQL_PASSWORD
+    value: "change-me"
+  - key: GIT_TOKEN
+    value: "XXXXXXXXXXXXXXXXXXXX"
+  - key: WEBHOOK_TOKEN
+    value: "XXXXXXXXXXXXXXXXXXXX"
+configs:
+  BASE_URL_SCHEME: "http"
+  #url without scheme and without trailing '/'
+  BASE_URL: "www.example.com"
+  DEX_CONFIG: "change-me"
+  GITLAB_NAMESPACE_ID: "change-me"
+  GITLAB_NAMESPACE_NAME: "change-me"
+  GIT_USERNAME: "change-me"
+  GITHUB_ORGANIZATION: "change-me"
+  # GITHUB OR GITLAB
+  GIT_PROVIDER: "GITHUB"
+  DEFAULT_CD_LOGS_BUCKET_REGION: "change-me"
+  DEFAULT_CACHE_BUCKET: "change-me"
+  DEFAULT_CACHE_BUCKET_REGION: "change-me"
+  DEFAULT_BUILD_LOGS_BUCKET: "change-me"
+  CHARTMUSEUM_STORAGE_AMAZON_BUCKET: ""
+  CHARTMUSEUM_STORAGE_AMAZON_REGION: ""
+  EXTERNAL_SECRET_AMAZON_REGION: ""
+  PROMETHEUS_URL: "http://change-me/prometheus"
