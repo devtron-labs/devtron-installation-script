@@ -146,6 +146,10 @@ createOrg = shellScript createOrgScript;
 log("created org " + createOrg);
 
 orgId = jsonSelect(createOrg, "orgId");
+if !orgId {
+	orgId = "2";
+}
+
 activeOrgScript = shebang + `
 curl -X POST '` + grafanaUrlWithPwd + `/api/user/using/` + orgId +`'`;
 activeOrg = shellScript activeOrgScript;
