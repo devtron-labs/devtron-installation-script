@@ -172,6 +172,8 @@ data:
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
+    [server]
+    rool_url = ""
   dashboardproviders.yaml: |
     apiVersion: 1
     providers: []
