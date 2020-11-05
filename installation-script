@@ -28,6 +28,8 @@ openssl rand -base64 20 | base64 | tr -d ':\n' | tr -d '=' | base64 | tr -d ':\n
 
 shebang = `#!/bin/bash 
 `;
+sleet50 = shebang + `
+sleep 50`;
 
 base64EncoderPrefix = `#!/bin/bash 
 `;
@@ -279,6 +281,7 @@ log("executed migrator setup command");
 #nats
 natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
 log("executed nats operator setup");
+ignore = shellScript sleep50;
 natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
 log("executed nats server setup");
 natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
