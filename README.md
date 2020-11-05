@@ -32,6 +32,7 @@ This chart is currently not available on the official helm repository therefore 
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
 $ cd devtron-installation-script/charts
 $ #modify values in values.yaml
+$ kubectl create ns devtroncd
 $ helm install devtron . -f values.yaml
 ```
 For more details about configuration see the [helm chart configuration](#configuration)
@@ -43,7 +44,7 @@ If you don't want to install helm on your cluster and just want to use `kubectl`
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
 $ cd devtron-installation-script/charts/
-$ kubectl apply devtron/templates/1-namespace.yaml
+$ kubectl apply create ns devtroncd
 $ kubectl apply -n devtroncd -f devtron/templates/install.yaml
 $ # wait for it to finish
 $ #edit devtron/templates/configmap-secret.yaml
