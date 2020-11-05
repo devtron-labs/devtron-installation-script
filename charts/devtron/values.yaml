@@ -11,7 +11,18 @@ configs:
   BASE_URL_SCHEME: "http"
   #url without scheme and without trailing '/'
   BASE_URL: "www.example.com"
-  DEX_CONFIG: "change-me"
+  DEX_CONFIG: |-
+    connectors:
+      - type: oidc
+        id: google
+        name: Google
+        config:
+          issuer: https://accounts.google.com
+          clientID: xxxxxxxx-xxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+          clientSecret: xxxxxxxxxxxxxxxxx
+          redirectURI: <BASE_URL_SCHEME>://<BASE_URL>/api/dex/callback
+          hostedDomains:
+          - example.com
   GITLAB_NAMESPACE_ID: "change-me"
   GITLAB_NAMESPACE_NAME: "change-me"
   GIT_USERNAME: "change-me"
