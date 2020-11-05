@@ -8,13 +8,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: devtroncd
-  labels:
-    name: devtron
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: devtron-ci
   labels:
     name: devtron
