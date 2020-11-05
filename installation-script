@@ -135,6 +135,7 @@ allow_org_create = true
  `;
 yamlEdit(grafana, `data.grafana\.ini`, grafanaIni, 6);
 grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
+log("setup grafana");
 
 createOrgScript = shebang + `
 sleep 50
@@ -142,15 +143,18 @@ ORG_ID=$( curl -d '{"name":"devtron-metrics-view"}' -H "Content-Type: applicatio
 echo $ORG_ID
 `;
 createOrg = shellScript createOrgScript;
+log("created org " + createOrg);
 
 orgId = jsonSelect(createOrg, "orgId");
 activeOrgScript = shebang + `
 curl -X POST '` + grafanaUrlWithPwd + `/api/user/using/` + orgId +`'`;
 activeOrg = shellScript activeOrgScript;
+log("activated org");
 
 setPreferenceScript = shebang + `
 curl -X PUT -H "Content-Type: application/json" -d '{"homeDashboardId":0,"theme":"light","timezone":"browser"}' '`+ grafanaUrlWithPwd + `/api/org/preferences'`;
 setPreference = shellScript setPreferenceScript;
+log("set preference");
 
 prometheusDatasourceScript = shebang + `
 curl '` + grafanaUrlWithPwd + `/api/datasources' \
@@ -159,7 +163,10 @@ curl '` + grafanaUrlWithPwd + `/api/datasources' \
 --data-raw '{"name":"Prometheus-devtron","type":"prometheus","access":"proxy","isDefault":true}'
 `;
 prometheusDatasource = shellScript prometheusDatasourceScript;
+log("data source setup step 1");
+
 datasourceId = jsonSelect(prometheusDatasource, "datasource.id");
+log("datasource id " + datasourceId);
 
 prometheusDatasourceScriptUpdate = shebang + `
 curl '` + grafanaUrlWithPwd + `/api/datasources/` + datasourceId + `' -X PUT \
@@ -172,7 +179,7 @@ curl '` + grafanaUrlWithPwd + `/api/datasources/` + datasourceId + `' -X PUT \
 "basicAuth":true,"jsonData":{},"version":1}'
 `;
 prometheusDatasourceUpdate = shellScript prometheusDatasourceScriptUpdate;
-
+log("data source setup step 2");
 
 grafanaDashboardProvider = `
 apiVersion: 1
@@ -190,19 +197,23 @@ providers:
 grafanaCm = kubectl get -n devtroncd cm devtron-grafana;
 jsonEdit(grafanaCm, `data.dashboardproviders\.yaml`, grafanaDashboardProvider);
 grafanaCm = kubectl apply -n devtroncd grafanaCm;
+log("setup up grafana cm with provider yaml");
+
 allDevtroncdPo = kubectl get po -n devtroncd;
 grafanaPodnamePattern = `items.#(metadata.name%"devtron-grafana*").metadata.name`;
 grafanaPodname = jsonSelect(allDevtroncdPo, grafanaPodnamePattern);
 grafanaPoddelete = kubectl delete -n devtroncd po grafanaPodname;
-
+log("deleted grafana pod to reload configmap");
 
 namespaces = kubectl apply namespace;
+log("created namespaces");
 sa = kubectl apply serviceAccount;
-
+log("created service account");
 
 #externalSecret
 yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
 externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
+log("created external secret");
 
 #postgresql
 # if postgres already installed skip installation
@@ -210,6 +221,7 @@ hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
 	yamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, 0);
 	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
+	log("created postgresql");
 }
 #argocd
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
@@ -230,12 +242,15 @@ yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
 argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
+log("executed argocd setup command");
 
 #rollout
 rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
+log("executed rollout setup command");
 
 #git-sensor
 yamlEdit(gitSensor, "data.PG_PASSWORD", postgresqlPassword, 0);
+
 
 #notifier
 yamlEdit(notifier, "data.DB_PWD", postgresqlPassword, 0);
@@ -251,11 +266,15 @@ yamlEdit(lens, "data.PG_PASSWORD", postgresqlPassword, 0);
 #delete migrator job
 yamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, 0);
 migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
+log("executed migrator setup command");
 
 #nats
 natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
+log("executed nats operator setup");
 natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
+log("executed nats server setup");
 natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
+log("executed nats streaming setup");
 
 #guard
 makeCertsDir = `#!/bin/bash
@@ -279,6 +298,7 @@ yamlEdit(guard, "webhooks.0.clientConfig.caBundle", cacrt, 4);
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, 1);
 yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, 1);
 chartmuseum = kubectl apply -n devtroncd chartmuseum -u chartmuseumOverride;
+log("executed chartmuseum setup");
 
 # devtron
 hasDevtron = kubectl get deployment "devtron" -n devtroncd;
@@ -361,16 +381,23 @@ externaSecretRegion = `env:
 yamlEdit(devtron, `data.dt-k8s-external-secret\.yaml`, externaSecretRegion, 2);
 
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
+log("executed devtron setup");
 devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
-
+log("executed devtron ingress setup");
 guard = kubectl apply -n devtroncd guard -u guardOverride;
+log("executed guard setup");
 dashboard = kubectl apply -n devtroncd dashboard -u dashboardOverride;
-
+log("executed dashboard setup");
 gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
+log("executed git sensor setup");
 imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
+log("executed image scanner setup");
 kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
+llog("executed kubewatch setup");
 lens = kubectl apply -n devtroncd lens -u lensOverride;
+log("executed lens setup");
 notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
+log("executed notifier setup");
 
 workflowConfig = `parallelism: 50
 artifactRepository:
@@ -389,7 +416,7 @@ executor:
   imagePullPolicy: Always`;
 yamlEdit(workflow, "data.config", workflowConfig, 10);
 workflow = kubectl apply -n argo workflow -u workflowOverride;
-
+log("executed workflow setup");
 postgresPlainPwd = base64DecoderPrefix + `echo "` + postgresqlPassword + `" | tr -d ':\n' ` + base64DecoderSuffix;
 postgresPlainPwd = shellScript postgresPlainPwd;
 clairPosrgresUrl = "postgres://postgres:"+ postgresPlainPwd +"@postgresql-postgresql.devtroncd:5432/clair?sslmode=disable";
@@ -398,3 +425,4 @@ clairEncodedConfig = base64EncoderPrefix + `echo "` + clairConfig + `"` + base64
 clairEncodedConfig = shellScript clairEncodedConfig;
 yamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, 0);
 clair = kubectl apply -n devtroncd clair -u clairOverride;
+log("executed clair setup");
