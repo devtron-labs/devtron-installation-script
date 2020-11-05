@@ -217,6 +217,8 @@ sa = kubectl apply serviceAccount;
 log("created service account");
 
 #externalSecret
+externalSecretAmazonRegion = base64EncoderPrefix + `echo "` + externalSecretAmazonRegion + `" | tr -d ':\n' ` + base64EncoderSuffix;
+externalSecretAmazonRegion = shellScript externalSecretAmazonRegion;
 yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
 externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
 log("created external secret");
