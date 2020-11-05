@@ -170,13 +170,6 @@ status:
   storedVersions: []
 ---
 apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    name: devtron
-  name: devtroncd
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: installer
