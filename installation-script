@@ -189,17 +189,17 @@ if !hasgrafana {
 	log("data source setup step 2");
 
 	grafanaDashboardProvider = `
-	apiVersion: 1
-	providers:
-	- disableDeletion: true
-	  editable: false
-	  folder: ""
-	  name: devtron-provider
-	  options:
-	    path: /var/lib/grafana/dashboards/devtron-provider
-	  orgId: `+ orgId + `
-	  type: file
-	 `;
+apiVersion: 1
+providers:
+- disableDeletion: true
+  editable: false
+  folder: ""
+  name: devtron-provider
+  options:
+    path: /var/lib/grafana/dashboards/devtron-provider
+  orgId: `+ orgId + `
+  type: file
+ `;
 
 	grafanaCm = kubectl get -n devtroncd cm devtron-grafana;
 	jsonEdit(grafanaCm, `data.dashboardproviders\.yaml`, grafanaDashboardProvider);
