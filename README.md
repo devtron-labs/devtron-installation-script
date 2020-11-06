@@ -2,6 +2,7 @@
 
 
 
+
 [![Join Discord](https://img.shields.io/badge/Join%20us%20on-Discord-e01563.svg)](https://discord.gg/72JDKy4)
 
 # Devtron Installation
@@ -45,7 +46,7 @@ If you don't want to install helm on your cluster and just want to use `kubectl`
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
 $ cd devtron-installation-script/
-$ kubectl apply create ns devtroncd
+$ kubectl create ns devtroncd
 $ kubectl -n devtroncd apply -f charts/devtron/crds
 $ # wait for crd to install
 $ kubectl apply -n devtroncd -f charts/devtron/templates/install.yaml
@@ -119,7 +120,7 @@ Run following commands to delete all the components installed by devtron
 ```bash
 $ cd devtron-installation-script/
 $ kubectl delete -n devtroncd -f yamls/
-$ kubectl delete -n devtrocd -f charts/devtron/templates/devtron-installer.yaml 
+$ kubectl delete -n devtroncd -f charts/devtron/templates/devtron-installer.yaml 
 $ kubectl delete -n devtrocd -f charts/devtron/templates/install.yaml
 $ kubectl delete -n devtroncd -f charts/devtron/crds
 $ kubectl delete ns devtroncd
