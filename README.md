@@ -43,13 +43,14 @@ If you don't want to install helm on your cluster and just want to use `kubectl`
 
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
-$ cd devtron-installation-script/charts/
+$ cd devtron-installation-script/
 $ kubectl apply create ns devtroncd
-$ kubectl apply -n devtroncd -f devtron/templates/install.yaml
-$ # wait for it to finish
-$ #edit devtron/templates/configmap-secret.yaml
-$ kubectl apply -n devtroncd -f devtron/templates/configmap-secret.yaml
-$ kubectl apply -n devtroncd -f devtron/templates/devtron-installer.yaml
+$ kubectl -n devtroncd apply -f devtron/crds
+$ # wait for crd to install
+$ kubectl apply -n devtroncd -f charts/devtron/templates/install.yaml
+$ #edit install/devtron-operator-configs.yaml
+$ kubectl apply -n devtroncd -f install/devtron-operator-configs.yaml
+$ kubectl apply -n devtroncd -f charts/devtron/templates/devtron-installer.yaml
 ```
 ### Access devtron dashboard
 
@@ -121,3 +122,26 @@ $ kubectl delete -n devtrocd -f charts/devtron/templates/devtron-installer.yaml
 $ kubectl delete -n devtrocd -f charts/devtron/templates/install.yaml
 $ kubectl delete ns devtroncd
 ```
+### Trouble shooting steps
+
+ 1. How do I know when installation is complete?
+     Run following command
+   ```bash
+$ kubectl -n devtroncd get installers installer-devtron -o jsonpath='{.status.sync.status}'
+```  
+Once installation process is complete, status will becomes `Applied` 
+It may take around 30 mins for installation to complete
+ 2. How do I track progress of installation?
+     Run following command to check logs of the pod
+ ```bash
+$ pod=$(kubectl -n devtroncd get po -l app=inception -o jsonpath='{.items[0].metadata.name}')&& kubectl -n devtroncd logs -f $pod
+```
+ 3. devtron installer logs have error and I want to restart installation.
+     Run following command to clean up components installed by devtron installer
+ ```bash
+$ cd devtron-installation-script/
+$ kubectl delete -n devtroncd -f yamls/
+$ kubectl -n devtroncd patch installer installer-devtron --type json -p '[{"op": "remove", "path": "/status"}]'
+```
+ 
+ In case you are still facing issues please feel free to reach out to us on [discord](https://discord.gg/72JDKy4)
