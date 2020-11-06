@@ -111,3 +111,13 @@ example of DEX_CONFIG is
 
 **Please Note:**
 Ensure that the cluster has access to the DEFAULT_CACHE_BUCKET, DEFAULT_BUILD_LOGS_BUCKET, CHARTMUSEUM_STORAGE_AMAZON_BUCKET and AWS secrets backends (SSM & secrets manager)
+
+### Cleanup
+Run following commands to delete all the components installed by devtron
+```bash
+$ cd devtron-installation-script/
+$ kubectl delete -n devtroncd -f yamls/
+$ kubectl delete -n devtrocd -f charts/devtron/templates/devtron-installer.yaml 
+$ kubectl delete -n devtrocd -f charts/devtron/templates/install.yaml
+$ kubectl delete ns devtroncd
+```
