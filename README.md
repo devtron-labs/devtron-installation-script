@@ -26,6 +26,8 @@ It packages third party components like
 
 ## How to use it
 
+**Warning** chart installation with helm 2 may not succeed because of crd race condition, while we fix the chart please install using [kubectl](#install-with-kubectl)
+
 ### Install with Helm
 
 This chart is currently not available on the official helm repository therefore you need to download it to install it.
@@ -37,7 +39,7 @@ $ #modify values in values.yaml
 $ kubectl create ns devtroncd
 $ helm install devtron . -f values.yaml
 ```
-For more details about configuration see the [helm chart configuration](#configuration)
+For more details about `values.yaml` see [configuration](#configuration)
 
 ### Install with kubectl
 
@@ -54,30 +56,47 @@ $ #edit install/devtron-operator-configs.yaml
 $ kubectl apply -n devtroncd -f install/devtron-operator-configs.yaml
 $ kubectl apply -n devtroncd -f charts/devtron/templates/devtron-installer.yaml
 ```
+For more details about `install/devtron-operator-configs.yaml` see [configuration](#configuration)
 ### Access devtron dashboard
 
+#### Dashboard URL
 devtron dashboard in now available at the `BASE_URL/dashboard`, where `BASE_URL` is same as provided in `values.yaml` in case of installation via helm chart OR provided in `charts/template/configmap-secret.yaml` in case of installation via kubectl.
 
+#### Login credentials
 For login use username:`admin` and for password run command mentioned below.
 ```bash
 $ kubectl -n devtroncd get secret devtron-secret -o jsonpath='{.data.ACD_PASSWORD}' | base64 -d
 ```
+### Access grafana
+
+#### Grafana URL
+grafana is available at `BASE_URL/grafana`
+
+#### Login credentials
 To log into grafana use username: `admin` and for password run command mentioned below.
 ```bash
 $ kubectl -n devtroncd get secret devtron-grafana-cred-secret -o jsonpath='{.data.admin-password}' | base64 -d
 ```
 ### Configuration
 
-All parameters mentioned in the `values.yaml` are mandatory.
+#### Configure Secrets
+For `helm` installation this section referes to ***secrets.env*** section of `values.yaml`. 
+For `kubectl` based installation it refers to `kind: secret` in ***install/devtron-operator-configs.yaml***. 
 
-First section is ***secrets.env*** and it has following properties
+Following properties should be configured
+
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **POSTGRESQL_PASSWORD*** | password for postgres database (required) | change-me |
 | **GIT_TOKEN** | git token for the gitops work flow, please note this is not for source code of repo and this token should have full access to create, delete, update repository (required) |  |
 | **WEBHOOK_TOKEN** | If you want to continue using jenkins for CI then please provide this for authentication of requests  |  |
 
-Second section is ***configs*** and has following properties
+#### Configure ConfigMaps
+For `helm` installation this section referes to ***configs*** section of `values.yaml`. 
+For `kubectl` based installation it refers to `kind: ConfigMap` in ***install/devtron-operator-configs.yaml***. 
+
+Following properties should be configured
+
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **BASE_URL_SCHEME** | either of http or https (required) | http |
@@ -132,14 +151,17 @@ $ kubectl delete ns devtroncd
    ```bash
 $ kubectl -n devtroncd get installers installer-devtron -o jsonpath='{.status.sync.status}'
 ```  
-Once installation process is complete, status will becomes `Applied` 
+
+Once installation process is complete, above command will print `Applied` 
+
 It may take around 30 mins for installation to complete
- 2. How do I track progress of installation?
+
+2. How do I track progress of installation?
      Run following command to check logs of the pod
  ```bash
 $ pod=$(kubectl -n devtroncd get po -l app=inception -o jsonpath='{.items[0].metadata.name}')&& kubectl -n devtroncd logs -f $pod
 ```
- 3. devtron installer logs have error and I want to restart installation.
+3. devtron installer logs have error and I want to restart installation.
      Run following command to clean up components installed by devtron installer
  ```bash
 $ cd devtron-installation-script/
