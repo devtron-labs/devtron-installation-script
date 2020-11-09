@@ -19,7 +19,7 @@ It packages third party components like
  - [Argocd](https://github.com/argoproj/argo-cd/) for gitops 
  - [Argo workflows](https://github.com/argoproj/argo) for CI
  - [Clair](https://github.com/quay/clair) & [Guard](https://github.com/guard/guard) for image scanning
- - [Kubernetes External Secrets](https://github.com/godaddy/kubernetes-external-secrets) for ingegrating with external secret management stores like [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) or [HashiCorp Vault](https://www.vaultproject.io/)
+ - [Kubernetes External Secrets](https://github.com/godaddy/kubernetes-external-secrets) for integrating with external secret management stores like [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) or [HashiCorp Vault](https://www.vaultproject.io/)
  - [Nats](https://github.com/nats-io) for event streaming
  - [Postgres](https://github.com/postgres/postgres) as datastore
  - Fork of [Argo Rollout](https://github.com/argoproj/argo-rollouts) 
@@ -43,7 +43,7 @@ For more details about `values.yaml` see [configuration](#configuration)
 
 ### Install with kubectl
 
-If you don't want to install helm on your cluster and just want to use `kubectl` to install `devtron platform`, then please follow following steps:
+If you don't want to install helm and just want to use `kubectl` to install `devtron platform`, then please follow the steps mentioned below:
 
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
@@ -60,7 +60,7 @@ For more details about `install/devtron-operator-configs.yaml` see [configuratio
 ### Access devtron dashboard
 
 #### Dashboard URL
-devtron dashboard in now available at the `BASE_URL/dashboard`, where `BASE_URL` is same as provided in `values.yaml` in case of installation via helm chart OR provided in `charts/template/configmap-secret.yaml` in case of installation via kubectl.
+Devtron dashboard in now available at the `BASE_URL/dashboard`, where `BASE_URL` is same as provided in `values.yaml` in case of installation via helm chart OR provided in `charts/template/configmap-secret.yaml` in case of installation via kubectl.
 
 #### Login credentials
 For login use username:`admin` and for password run command mentioned below.
@@ -87,7 +87,7 @@ Following properties should be configured
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
-| **POSTGRESQL_PASSWORD*** | password for postgres database (required) | change-me |
+| **POSTGRESQL_PASSWORD** | password for postgres database (required) | change-me |
 | **GIT_TOKEN** | git token for the gitops work flow, please note this is not for source code of repo and this token should have full access to create, delete, update repository (required) |  |
 | **WEBHOOK_TOKEN** | If you want to continue using jenkins for CI then please provide this for authentication of requests  |  |
 
