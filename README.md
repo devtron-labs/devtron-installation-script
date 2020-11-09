@@ -78,6 +78,7 @@ Run following command to get dashboard
 ```bash
 $ scheme=`kubectl -n devtroncd get cm devtron-operator-cm -o jsonpath='{.data.BASE_URL_SCHEME}'` && url=`kubectl -n devtroncd get cm devtron-operator-cm -o jsonpath='{.data.BASE_URL}'` && echo "$scheme://$url/dashboard"
 ``` 
+**Please Note:** URL should be pointing to the cluster on which you have intalled the platform. For example if you have directed domain `devtron.example.com` to the cluster and ingress controller is listening on port `32080` then url will be `devtron.example.com:32080`
 
 #### Login credentials
 For login use username:`admin` and for password run command mentioned below.
@@ -117,7 +118,7 @@ Following properties should be configured
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **BASE_URL_SCHEME** | either of http or https (required) | http |
-| **BASE_URL** | url without scheme and trailing slash `eg. devtron.ai` this is the domain pointing to the cluster on which devtron platform is being installed (required) | `change-me` |
+| **BASE_URL** | url without scheme and trailing slash, this is the domain pointing to the cluster on which devtron platform is being installed. For example if you have directed domain `devtron.example.com` to the cluster and ingress controller is listening on port `32080` then url will be `devtron.example.com:32080` (required) | `change-me` |
 | **DEX_CONFIG** | dex config if you want to integrate login with SSO (optional) for more information check [Argocd documentation](https://argoproj.github.io/argo-cd/operator-manual/user-management/) | 
 | **GIT_PROVIDER** | git provider for storing config files for gitops, currently only GITHUB and GITLAB are supported (required) | `GITHUB` | |
 | **GITLAB_NAMESPACE_ID** | if GIT_PROVIDER is GITLAB, this is mandatory | | 
