@@ -74,6 +74,11 @@ provided in `values.yaml` in case of installation via helm chart
 OR 
 provided in `install/devtron-operator-configs.yaml` in case of installation via kubectl.
 
+Run following command to get dashboard
+```bash
+$ scheme=`kubectl -n devtroncd get cm devtron-operator-cm -o jsonpath='{.data.BASE_URL_SCHEME}'` && url=`kubectl -n devtroncd get cm devtron-operator-cm -o jsonpath='{.data.BASE_URL}'` && echo "$scheme://$url/dashboard"
+``` 
+
 #### Login credentials
 For login use username:`admin` and for password run command mentioned below.
 ```bash
