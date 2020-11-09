@@ -57,10 +57,22 @@ $ kubectl apply -n devtroncd -f install/devtron-operator-configs.yaml
 $ kubectl apply -n devtroncd -f charts/devtron/templates/devtron-installer.yaml
 ```
 For more details about `install/devtron-operator-configs.yaml` see [configuration](#configuration)
+### Installation status
+Run following command
+   ```bash
+$ kubectl -n devtroncd get installers installer-devtron -o jsonpath='{.status.sync.status}'
+```  
+
+Once installation process is complete, above command will print `Applied` 
+It may take around 30 mins for installation to complete.
+
 ### Access devtron dashboard
 
 #### Dashboard URL
-Devtron dashboard in now available at the `BASE_URL/dashboard`, where `BASE_URL` is same as provided in `values.yaml` in case of installation via helm chart OR provided in `charts/template/configmap-secret.yaml` in case of installation via kubectl.
+Devtron dashboard in now available at the `BASE_URL/dashboard`, where `BASE_URL` is same as 
+provided in `values.yaml` in case of installation via helm chart 
+OR 
+provided in `install/devtron-operator-configs.yaml` in case of installation via kubectl.
 
 #### Login credentials
 For login use username:`admin` and for password run command mentioned below.
@@ -100,18 +112,18 @@ Following properties should be configured
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **BASE_URL_SCHEME** | either of http or https (required) | http |
-| **BASE_URL** | url without scheme and trailing slash `eg. devtron.ai` (required) | `change-me` |
+| **BASE_URL** | url without scheme and trailing slash `eg. devtron.ai` this is the domain pointing to the cluster on which devtron platform is being installed (required) | `change-me` |
 | **DEX_CONFIG** | dex config if you want to integrate login with SSO (optional) for more information check [Argocd documentation](https://argoproj.github.io/argo-cd/operator-manual/user-management/) | 
 | **GIT_PROVIDER** | git provider for storing config files for gitops, currently only GITHUB and GITLAB are supported (required) | `GITHUB` | |
-| **GITLAB_NAMESPACE_ID** | if GIT_PROVIDER is GITLAB | | 
-| **GITLAB_NAMESPACE_NAME** | if GIT_PROVIDER is GITLAB | |
+| **GITLAB_NAMESPACE_ID** | if GIT_PROVIDER is GITLAB, this is mandatory | | 
+| **GITLAB_NAMESPACE_NAME** | if GIT_PROVIDER is GITLAB, this is mandatory | |
 | **GIT_USERNAME** | git username for the GIT_PROVIDER  (required) | |
-| **GITHUB_ORGANIZATION** | if GIT_PROVIDER is GITHUB | |
-| **DEFAULT_CD_LOGS_BUCKET_REGION** | AWS region of bucket to store CD logs (required) | |
-| **DEFAULT_CACHE_BUCKET** | AWS bucket to store docker cache (required) |  |
+| **GITHUB_ORGANIZATION** | if GIT_PROVIDER is GITHUB, this is mandatory | |
+| **DEFAULT_CD_LOGS_BUCKET_REGION** | AWS region of bucket to store CD logs, this should be created before hand (required) | |
+| **DEFAULT_CACHE_BUCKET** | AWS bucket to store docker cache, this should be created before hand (required) |  |
 | **DEFAULT_CACHE_BUCKET_REGION** | AWS region of cache bucket defined in previous step (required) | |
-| **DEFAULT_BUILD_LOGS_BUCKET** | AWS bucket to store build logs (required) | |
-| **CHARTMUSEUM_STORAGE_AMAZON_BUCKET** | AWS bucket to store charts (required) |  |
+| **DEFAULT_BUILD_LOGS_BUCKET** | AWS bucket to store build logs, this should be created before hand (required) | |
+| **CHARTMUSEUM_STORAGE_AMAZON_BUCKET** | AWS bucket to store charts, this should be created before hand (required) |  |
 | **CHARTMUSEUM_STORAGE_AMAZON_REGION** | AWS region for bucket defined in previous step to store charts (required) | |
 | **EXTERNAL_SECRET_AMAZON_REGION** | AWS region for secret manager to pick (required) |  |
 | **PROMETHEUS_URL** | url of prometheus where all cluster data is stored, if this is wrong, you will not be able to see application metrics like cpu, ram, http status code, latency and throughput (required) |  |
@@ -146,8 +158,9 @@ $ kubectl delete ns devtroncd
 ```
 ### Trouble shooting steps
 
- 1. How do I know when installation is complete?
-     Run following command
+ **1**. How do I know when installation is complete?
+
+Run following command
    ```bash
 $ kubectl -n devtroncd get installers installer-devtron -o jsonpath='{.status.sync.status}'
 ```  
@@ -156,13 +169,15 @@ Once installation process is complete, above command will print `Applied`
 
 It may take around 30 mins for installation to complete
 
-2. How do I track progress of installation?
-     Run following command to check logs of the pod
+**2**. How do I track progress of installation?
+
+Run following command to check logs of the pod
  ```bash
 $ pod=$(kubectl -n devtroncd get po -l app=inception -o jsonpath='{.items[0].metadata.name}')&& kubectl -n devtroncd logs -f $pod
 ```
-3. devtron installer logs have error and I want to restart installation.
-     Run following command to clean up components installed by devtron installer
+**3**. devtron installer logs have error and I want to restart installation.
+
+Run following command to clean up components installed by devtron installer
  ```bash
 $ cd devtron-installation-script/
 $ kubectl delete -n devtroncd -f yamls/
