@@ -372,6 +372,7 @@ yamlEdit(devtron, "data.DEX_SECRET", dexSecret, 0);
 yamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, 0);
 yamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, 0);
 yamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, 0);
+yamlEdit(devtron, "data.GRAFANA_PASSOWRD", grafanaPassword, 0);
 
 
 yamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURLScheme + "://" + baseURL+"/orchestrator/webhook/ext-ci", 1);
