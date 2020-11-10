@@ -3,6 +3,7 @@
 
 
 
+
 [![Join Discord](https://img.shields.io/badge/Join%20us%20on-Discord-e01563.svg)](https://discord.gg/72JDKy4)
 
 # Devtron Installation
@@ -105,9 +106,9 @@ Following properties should be configured
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
-| **POSTGRESQL_PASSWORD** | password for postgres database (required) | change-me |
-| **GIT_TOKEN** | git token for the gitops work flow, please note this is not for source code of repo and this token should have full access to create, delete, update repository (required) |  |
-| **WEBHOOK_TOKEN** | If you want to continue using jenkins for CI then please provide this for authentication of requests  |  |
+| **POSTGRESQL_PASSWORD** | password for postgres database, should be base64 encoded (required) | change-me |
+| **GIT_TOKEN** | git token for the gitops work flow, please note this is not for source code of repo and this token should have full access to create, delete, update repository, should be base64 encoded (required) |  |
+| **WEBHOOK_TOKEN** | If you want to continue using jenkins for CI then please provide this for authentication of requests, should be base64 encoded  |  |
 
 #### Configure ConfigMaps
 For `helm` installation this section referes to ***configs*** section of `values.yaml`. 
@@ -121,10 +122,10 @@ Following properties should be configured
 | **BASE_URL** | url without scheme and trailing slash, this is the domain pointing to the cluster on which devtron platform is being installed. For example if you have directed domain `devtron.example.com` to the cluster and ingress controller is listening on port `32080` then url will be `devtron.example.com:32080` (required) | `change-me` |
 | **DEX_CONFIG** | dex config if you want to integrate login with SSO (optional) for more information check [Argocd documentation](https://argoproj.github.io/argo-cd/operator-manual/user-management/) | 
 | **GIT_PROVIDER** | git provider for storing config files for gitops, currently only GITHUB and GITLAB are supported (required) | `GITHUB` | |
-| **GITLAB_NAMESPACE_ID** | if GIT_PROVIDER is GITLAB, this is mandatory | | 
-| **GITLAB_NAMESPACE_NAME** | if GIT_PROVIDER is GITLAB, this is mandatory | |
+| **GITLAB_NAMESPACE_ID** | if GIT_PROVIDER is GITLAB, this is mandatory and should be already created | | 
+| **GITLAB_NAMESPACE_NAME** | if GIT_PROVIDER is GITLAB, this is mandatory and should be already created | |
 | **GIT_USERNAME** | git username for the GIT_PROVIDER  (required) | |
-| **GITHUB_ORGANIZATION** | if GIT_PROVIDER is GITHUB, this is mandatory | |
+| **GITHUB_ORGANIZATION** | if GIT_PROVIDER is GITHUB, this is mandatory and should be already created | |
 | **DEFAULT_CD_LOGS_BUCKET_REGION** | AWS region of bucket to store CD logs, this should be created before hand (required) | |
 | **DEFAULT_CACHE_BUCKET** | AWS bucket to store docker cache, this should be created before hand (required) |  |
 | **DEFAULT_CACHE_BUCKET_REGION** | AWS region of cache bucket defined in previous step (required) | |
@@ -149,8 +150,14 @@ example of DEX_CONFIG is
             hostedDomains:
             - abc.com
 
+to convert string to base64 use
+
+```bash
+$ echo -n "string" | base64 -d
+```
 **Please Note:**
-Ensure that the cluster has access to the DEFAULT_CACHE_BUCKET, DEFAULT_BUILD_LOGS_BUCKET, CHARTMUSEUM_STORAGE_AMAZON_BUCKET and AWS secrets backends (SSM & secrets manager)
+1) Ensure that the **cluster has read and write access** to the S3 buckets mentioned in DEFAULT_CACHE_BUCKET, DEFAULT_BUILD_LOGS_BUCKET, CHARTMUSEUM_STORAGE_AMAZON_BUCKET 
+2) Ensure that cluster has **read access** to AWS secrets backends (SSM & secrets manager)
 
 ### Cleanup
 Run following commands to delete all the components installed by devtron
@@ -158,7 +165,7 @@ Run following commands to delete all the components installed by devtron
 $ cd devtron-installation-script/
 $ kubectl delete -n devtroncd -f yamls/
 $ kubectl delete -n devtroncd -f charts/devtron/templates/devtron-installer.yaml 
-$ kubectl delete -n devtrocd -f charts/devtron/templates/install.yaml
+$ kubectl delete -n devtroncd -f charts/devtron/templates/install.yaml
 $ kubectl delete -n devtroncd -f charts/devtron/crds
 $ kubectl delete ns devtroncd
 ```
