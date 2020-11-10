@@ -24,15 +24,33 @@ It packages third party components like
 ## How to use it
 
 ### Install with Helm
-
 This chart is currently not available on the official helm repository therefore you need to download it to install it.
+
+
+## Helm 3
 
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
 $ cd devtron-installation-script/charts
+$ #Create devtroncd namespace
+$ kubectl create ns devtroncd
 $ #modify values in values.yaml
-$ helm install devtron . -f values.yaml
+$ helm install devtron devtron/ --namespace devtroncd -f values.yaml
 ```
+
+## Helm 2
+
+```bash
+$ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
+$ cd devtron-installation-script/charts
+$ #Create CRDs manually when using Helm2
+$ kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+$ #Create devtroncd namespace
+$ kubectl create ns devtroncd
+$ #modify values in values.yaml
+$ helm install devtron/ --name devtron --namespace devtroncd -f values.yaml
+```
+
 For more details about configuration see the [helm chart configuration](#configuration)
 
 ### Install with kubectl
