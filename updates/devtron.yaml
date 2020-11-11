@@ -5,7 +5,6 @@ metadata:
 update:
   data:
     GIT_SENSOR_TIMEOUT: "300"
-    GRAFANA_PASSWORD: "prom-operator"
     LENS_TIMEOUT: "300"
     DEFAULT_BUILD_LOGS_KEY_PREFIX: "devtron"
     DEFAULT_CD_ARTIFACT_KEY_LOCATION: "devtron/cd-artifacts"
