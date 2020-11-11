@@ -8,7 +8,13 @@
 
 # Devtron Installation
 
-Devtron is an open source software delivery workflow for kubernetes written in go. It is designed as a self-serve platform for operationalizing and maintaining applications (AppOps) on kubernetes in a developer friendly way.
+##Prerequisites
+
+You will need to be ready with following prerequisites before Devtron installation
+ - A Kubernetes cluster (preferably K8s 1.16 or above) created on AWS (EKS or KOPS). Check [Creating a Production grade EKS cluster using EKSCTL](https://devtron.ai/blog/creating-production-grade-kubernetes-eks-cluster-eksctl/)
+ - An Nginx ingress controller pre-configured within the cluster either exposed as LoadBalancer or NodePort.
+ - 3 S3 buckets for ci-caching, ci-logs and chartmuseum and their access permissions added to the cluster role.
+
 
 ## Introduction
 
