@@ -8,7 +8,7 @@
 
 # Devtron Installation
 
-##Prerequisites
+## Prerequisites
 
 You will need to be ready with following prerequisites before Devtron installation
  - A Kubernetes cluster (preferably K8s 1.16 or above) created on AWS (EKS or KOPS). Check [Creating a Production grade EKS cluster using EKSCTL](https://devtron.ai/blog/creating-production-grade-kubernetes-eks-cluster-eksctl/)
@@ -184,6 +184,7 @@ $ echo -n "string" | base64 -d
 2) Ensure that cluster has **read access** to AWS secrets backends (SSM & secrets manager)
 
 ### Cleanup
+
 Run following commands to delete all the components installed by devtron
 ```bash
 $ cd devtron-installation-script/
@@ -193,6 +194,21 @@ $ kubectl delete -n devtroncd -f charts/devtron/templates/install.yaml
 $ kubectl delete -n devtroncd -f charts/devtron/crds
 $ kubectl delete ns devtroncd
 ```
+#### Cleaning Installer Helm3
+```bash
+$ cd devtron-installation-script/
+$ helm delete devtron --namespace devtroncd
+```
+
+#### Cleaning Installer Helm2
+```bash
+cd devtron-installation-script/
+helm delete devtron --purge
+#Deleting CRDs manually
+kubectl delete -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+```
+
+
 ### Trouble shooting steps
 
  **1**. How do I know when installation is complete?
