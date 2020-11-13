@@ -50,7 +50,7 @@ if !gitToken {
 }
 
 
-argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/argocd.yaml");
+argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/acd-upgrade-test/yamls/argocd.yaml");
 chartmuseum = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/chartmuseum.yaml");
 clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
 clairConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair-config.yaml");
@@ -66,7 +66,7 @@ natsOperator = download("https://raw.githubusercontent.com/devtron-labs/devtron-
 natsServer = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-server.yaml");
 natsStreaming = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-streaming.yaml");
 notifier = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/notifier.yaml");
-devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron.yaml");
+devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/acd-upgrade-test/yamls/devtron.yaml");
 devtronDexIngress = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
 workflow = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/workflow.yaml");
 serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/serviceaccount.yaml");
