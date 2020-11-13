@@ -247,7 +247,9 @@ yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
 # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
+log("updating namespace 1");
 yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 14);
+log("updating namespace 2");
 yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
 argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
