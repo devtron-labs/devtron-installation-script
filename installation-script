@@ -241,16 +241,16 @@ helmRepo = `- name: incubator
 - name: devtron-charts
   url: https://devtron-charts.s3.us-east-2.amazonaws.com/charts`;
 
-yamlEdit(argocd, `data.helm\.repositories`, helmRepo, 15);
-yamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, 15);
-yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
+yamlEdit(argocd, `data.helm\.repositories`, helmRepo, 18);
+yamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, 18);
+yamlEdit(argocd, `data.dex\.config`, dexConfig, 18);
 # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
 log("updating namespace 1");
-yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 14);
+yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 16);
 log("updating namespace 2");
-yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
+yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 17);
 argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
@@ -407,7 +407,7 @@ log("executed git sensor setup");
 imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
 log("executed image scanner setup");
 kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
-llog("executed kubewatch setup");
+log("executed kubewatch setup");
 lens = kubectl apply -n devtroncd lens -u lensOverride;
 log("executed lens setup");
 notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
