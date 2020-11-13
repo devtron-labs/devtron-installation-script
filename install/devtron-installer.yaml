@@ -4,4 +4,4 @@ metadata:
   name: installer-devtron
   namespace: default
 spec:
-  url: https://github.com/devtron-labs/devtron-installation-script/blob/acd-upgrade-test/installation-script
+  url: https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/acd-upgrade-test/installation-script
