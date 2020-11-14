@@ -244,6 +244,7 @@ helmRepo = `- name: incubator
 yamlEdit(argocd, `data.helm\.repositories`, helmRepo, 15);
 yamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, 15);
 yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
+yamlEdit(argocd, `data.policy\.default`, `role:admin`, 16);
 # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
