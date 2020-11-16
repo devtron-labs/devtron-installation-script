@@ -406,7 +406,7 @@ log("executed git sensor setup");
 imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
 log("executed image scanner setup");
 kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
-llog("executed kubewatch setup");
+log("executed kubewatch setup");
 lens = kubectl apply -n devtroncd lens -u lensOverride;
 log("executed lens setup");
 notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
