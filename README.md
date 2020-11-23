@@ -8,7 +8,13 @@
 
 # Devtron Installation
 
-Devtron is an open source software delivery workflow for kubernetes written in go. It is designed as a self-serve platform for operationalizing and maintaining applications (AppOps) on kubernetes in a developer friendly way.
+## Prerequisites
+
+You will need to be ready with following prerequisites before Devtron installation
+ - A Kubernetes cluster (preferably K8s 1.16 or above) created on AWS (EKS or KOPS). Check [Creating a Production grade EKS cluster using EKSCTL](https://devtron.ai/blog/creating-production-grade-kubernetes-eks-cluster-eksctl/)
+ - An Nginx ingress controller pre-configured within the cluster either exposed as LoadBalancer or NodePort.
+ - 3 S3 buckets for ci-caching, ci-logs and chartmuseum and their access permissions added to the cluster role.
+
 
 ## Introduction
 
@@ -30,17 +36,35 @@ It packages third party components like
 **Warning** chart installation with helm 2 may not succeed because of crd race condition, while we fix the chart please install using [kubectl](#install-with-kubectl)
 
 ### Install with Helm
-
 This chart is currently not available on the official helm repository therefore you need to download it to install it.
+
+
+## Helm 3
 
 ```bash
 $ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
 $ cd devtron-installation-script/charts
-$ #modify values in values.yaml
+$ #Create devtroncd namespace
 $ kubectl create ns devtroncd
-$ helm install devtron . -f values.yaml
+$ #modify values in values.yaml
+$ helm install devtron devtron/ --namespace devtroncd -f values.yaml
 ```
-For more details about `values.yaml` see [configuration](#configuration)
+
+## Helm 2
+
+```bash
+$ git clone [https://github.com/devtron-labs/devtron-installation-script.git](https://github.com/devtron-labs/devtron-installation-script.git)
+$ cd devtron-installation-script/charts
+$ #Create CRDs manually when using Helm2
+$ kubectl apply -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+$ #Create devtroncd namespace
+$ kubectl create ns devtroncd
+$ #modify values in values.yaml
+$ helm install devtron/ --name devtron --namespace devtroncd -f values.yaml
+```
+
+For more details about configuration see the [helm chart configuration](#configuration)
+
 
 ### Install with kubectl
 
@@ -160,6 +184,7 @@ $ echo -n "string" | base64 -d
 2) Ensure that cluster has **read access** to AWS secrets backends (SSM & secrets manager)
 
 ### Cleanup
+
 Run following commands to delete all the components installed by devtron
 ```bash
 $ cd devtron-installation-script/
@@ -169,6 +194,21 @@ $ kubectl delete -n devtroncd -f charts/devtron/templates/install.yaml
 $ kubectl delete -n devtroncd -f charts/devtron/crds
 $ kubectl delete ns devtroncd
 ```
+#### Cleaning Installer Helm3
+```bash
+$ cd devtron-installation-script/
+$ helm delete devtron --namespace devtroncd
+```
+
+#### Cleaning Installer Helm2
+```bash
+cd devtron-installation-script/
+helm delete devtron --purge
+#Deleting CRDs manually
+kubectl delete -f https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/charts/devtron/crds/crd-devtron.yaml
+```
+
+
 ### Trouble shooting steps
 
  **1**. How do I know when installation is complete?
