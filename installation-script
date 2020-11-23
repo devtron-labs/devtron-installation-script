@@ -135,7 +135,7 @@ serve_from_sub_path = true
 [users]
 allow_org_create = true
  `;
-kubeYamlEdit(grafana, `data.grafana\.ini`, grafanaIni, `/ConfigMap/devtroncd/devtron-grafana-config-dashboards`);
+kubeYamlEdit(grafana, `data.grafana\.ini`, grafanaIni, `/ConfigMap/devtroncd/devtron-grafana`);
 grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
 log("setup grafana");
 
