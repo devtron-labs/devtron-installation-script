@@ -253,6 +253,9 @@ kubeYamlEdit(argocd, `subjects.0.namespace`, "devtroncd", `rbac.authorization.k8
 if hasArgocd {
 	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-cm`);
 	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-rbac-cm`);
+	kubeYamlDelete(argocd, filter=`/Secret//argocd-secret`);
+	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-ssh-known-hosts-cm`);
+	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-tls-certs-cm`);
 }
 argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
