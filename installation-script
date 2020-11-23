@@ -269,7 +269,6 @@ log("executed rollout setup command");
 #git-sensor
 kubeYamlEdit(gitSensor, "data.PG_PASSWORD", postgresqlPassword, `/Secret//git-sensor-secret`);
 
-
 #notifier
 kubeYamlEdit(notifier, "data.DB_PWD", postgresqlPassword, `/Secret//notifier-secret`);
 kubeYamlEdit(notifier, "data.BASE_URL", baseURLScheme + "://" + baseURL, `/ConfigMap//notifier-cm`);
