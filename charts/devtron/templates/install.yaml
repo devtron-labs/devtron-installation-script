@@ -65,6 +65,9 @@ metadata:
 spec:
   minReadySeconds: 60
   replicas: 1
+  strategy:
+    type:
+      Recreate
   selector:
     matchLabels:
       app: inception
@@ -76,7 +79,7 @@ spec:
     spec:
       containers:
         -
-          image: quay.io/devtron/inception:3ff97234-130-2201
+          image: quay.io/devtron/inception:33dcb4a3-130-2359
           imagePullPolicy: IfNotPresent
           name: inception
           ports:

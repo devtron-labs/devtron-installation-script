@@ -108,7 +108,7 @@ if !grafanaPassword {
 }
 grafanaPasswordPlain = base64DecoderPrefix + `echo "` + grafanaPassword + `" | tr -d ':\n' ` + base64DecoderSuffix;
 grafanaPasswordPlain = shellScript grafanaPasswordPlain;
-yamlEdit(grafana, "data.admin-password", grafanaPassword, 0);
+kubeYamlEdit(grafana, "data.admin-password", grafanaPassword, `/Secret//devtron-grafana-cred-secret`);
 grafanaUrl = baseURLScheme + "://%s:%s@" + baseURL + "/grafana";
 grafanaUrlWithPwd = baseURLScheme + "://admin:"+ grafanaPasswordPlain + "@" + baseURL + "/grafana";
 
@@ -135,7 +135,7 @@ serve_from_sub_path = true
 [users]
 allow_org_create = true
  `;
-yamlEdit(grafana, `data.grafana\.ini`, grafanaIni, 6);
+kubeYamlEdit(grafana, `data.grafana\.ini`, grafanaIni, `/ConfigMap/devtroncd/devtron-grafana-config-dashboards`);
 grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
 log("setup grafana");
 
@@ -221,7 +221,7 @@ log("created service account");
 #externalSecret
 externalSecretAmazonRegion = base64EncoderPrefix + `echo "` + externalSecretAmazonRegion + `" | tr -d ':\n' ` + base64EncoderSuffix;
 externalSecretAmazonRegion = shellScript externalSecretAmazonRegion;
-yamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, 1);
+kubeYamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, `/Secret//devtron-kubernetes-external-secret`);
 externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
 log("created external secret");
 
@@ -229,7 +229,7 @@ log("created external secret");
 # if postgres already installed skip installation
 hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
-	yamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, 0);
+	kubeYamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, `/Secret//postgresql-postgresql`);
 	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 	log("created postgresql");
 }
@@ -241,14 +241,22 @@ helmRepo = `- name: incubator
 - name: devtron-charts
   url: https://devtron-charts.s3.us-east-2.amazonaws.com/charts`;
 
-yamlEdit(argocd, `data.helm\.repositories`, helmRepo, 15);
-yamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, 15);
-yamlEdit(argocd, `data.dex\.config`, dexConfig, 15);
+kubeYamlEdit(argocd, `data.helm\.repositories`, helmRepo, `/ConfigMap//argocd-cm` );
+kubeYamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, `/ConfigMap//argocd-cm`);
+kubeYamlEdit(argocd, `data.dex\.config`, dexConfig, `/ConfigMap//argocd-cm`);
+kubeYamlEdit(argocd, `data.policy\.default`, `role:admin`, `/ConfigMap//argocd-rbac-cm`);
 # patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 # pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 
-yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 14);
-yamlEdit(argocd, `subjects.0.namespace`, "devtroncd", 13);
+kubeYamlEdit(argocd, `subjects.0.namespace`, "devtroncd", `rbac.authorization.k8s.io/ClusterRoleBinding//argocd-application-controller`);
+kubeYamlEdit(argocd, `subjects.0.namespace`, "devtroncd", `rbac.authorization.k8s.io/ClusterRoleBinding//argocd-server`);
+if hasArgocd {
+	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-cm`);
+	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-rbac-cm`);
+	kubeYamlDelete(argocd, filter=`/Secret//argocd-secret`);
+	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-ssh-known-hosts-cm`);
+	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-tls-certs-cm`);
+}
 argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
@@ -259,22 +267,21 @@ rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
 log("executed rollout setup command");
 
 #git-sensor
-yamlEdit(gitSensor, "data.PG_PASSWORD", postgresqlPassword, 0);
-
+kubeYamlEdit(gitSensor, "data.PG_PASSWORD", postgresqlPassword, `/Secret//git-sensor-secret`);
 
 #notifier
-yamlEdit(notifier, "data.DB_PWD", postgresqlPassword, 0);
-yamlEdit(notifier, "data.BASE_URL", baseURLScheme + "://" + baseURL, 1);
+kubeYamlEdit(notifier, "data.DB_PWD", postgresqlPassword, `/Secret//notifier-secret`);
+kubeYamlEdit(notifier, "data.BASE_URL", baseURLScheme + "://" + baseURL, `/ConfigMap//notifier-cm`);
 
 #image-scanner
-yamlEdit(imageScanner, "data.PG_PASSWORD", postgresqlPassword, 0);
+kubeYamlEdit(imageScanner, "data.PG_PASSWORD", postgresqlPassword, `/Secret//image-scanner-secret`);
 
 #lens
-yamlEdit(lens, "data.PG_PASSWORD", postgresqlPassword, 0);
+kubeYamlEdit(lens, "data.PG_PASSWORD", postgresqlPassword, `/Secret//lens-secret`);
 
 #migrator
 #delete migrator job
-yamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, 0);
+kubeYamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, `/Secret//postgresql-migrator`);
 migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
 log("executed migrator setup command");
 
@@ -301,13 +308,13 @@ key = base64EncoderPrefix + "cat /tmp/certs/grumpy-key.pem" + base64EncoderSuffi
 key = shellScript key;
 cacrt = base64EncoderPrefix + "cat /tmp/certs/ca.crt" + base64EncoderSuffix;
 cacrt = shellScript cacrt;
-yamlEdit(guard, `data.cert\.pem`, crt, 0);
-yamlEdit(guard, `data.key\.pem`, key, 0);
-yamlEdit(guard, "webhooks.0.clientConfig.caBundle", cacrt, 4);
+kubeYamlEdit(guard, `data.cert\.pem`, crt, `/Secret//guard-secret`);
+kubeYamlEdit(guard, `data.key\.pem`, key, `/Secret//guard-secret`);
+kubeYamlEdit(guard, "webhooks.0.clientConfig.caBundle", cacrt, `admissionregistration.k8s.io/ValidatingWebhookConfiguration//grumpy`);
 
 #chartmuseum
-yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, 1);
-yamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, 1);
+kubeYamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, `/ConfigMap//devtron-chartmuseum`);
+kubeYamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, `/ConfigMap//devtron-chartmuseum`);
 chartmuseum = kubectl apply -n devtroncd chartmuseum -u chartmuseumOverride;
 log("executed chartmuseum setup");
 
@@ -320,8 +327,8 @@ dexJwtKey = shellScript passwordGen;
 dexCStoreKey = shellScript passwordGen;
 externalCIAPISecret = shellScript passwordGen;
 
-yamlEdit(devtron, "data.PG_PASSWORD", postgresqlPassword, 0);
-yamlEdit(devtron, "data.GIT_TOKEN", gitToken, 0);
+kubeYamlEdit(devtron, "data.PG_PASSWORD", postgresqlPassword, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.GIT_TOKEN", gitToken, `/Secret//devtron-secret`);
 
 #fix this, as this will result in fields getting changed, if exists then we need to pull existing values and apply again
 
@@ -365,32 +372,32 @@ if hasDevtron {
 }
 
 
-yamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, 0);
-yamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, 0);
-yamlEdit(devtron, "data.ORCH_TOKEN", orchToken, 0);
-yamlEdit(devtron, "data.DEX_SECRET", dexSecret, 0);
-yamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, 0);
-yamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, 0);
-yamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, 0);
-yamlEdit(devtron, "data.GRAFANA_PASSWORD", grafanaPassword, 0);
+kubeYamlEdit(devtron, "data.EXTERNAL_CI_API_SECRET", externalCIAPISecret, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.WEBHOOK_TOKEN", webHookToken, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.ORCH_TOKEN", orchToken, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.DEX_SECRET", dexSecret, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.DEX_JWTKEY", dexJwtKey, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.DEX_CSTOREKEY", dexCStoreKey, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.ACD_PASSWORD", acdPassword, `/Secret//devtron-secret`);
+kubeYamlEdit(devtron, "data.GRAFANA_PASSWORD", grafanaPassword, `/Secret//devtron-secret`);
 
 
-yamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURLScheme + "://" + baseURL+"/orchestrator/webhook/ext-ci", 1);
-yamlEdit(devtron, "data.GITLAB_NAMESPACE_ID", gitlabNamespaceId, 1);
-yamlEdit(devtron, "data.GITLAB_NAMESPACE_NAME", gitlabNamespaceName, 1);
-yamlEdit(devtron, "data.GIT_USERNAME", gitUserName, 1);
-yamlEdit(devtron, "data.GITHUB_ORGANIZATION", githubOrganization, 1);
-yamlEdit(devtron, "data.GIT_PROVIDER", gitProvider, 1);
-yamlEdit(devtron, "data.DEFAULT_CD_LOGS_BUCKET_REGION", defaultCDLogsBucketRegion, 1);
-yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, 1);
-yamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, 1);
-yamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, 1);
-yamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, 1);
+kubeYamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURLScheme + "://" + baseURL+"/orchestrator/webhook/ext-ci", `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GITLAB_NAMESPACE_ID", gitlabNamespaceId, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GITLAB_NAMESPACE_NAME", gitlabNamespaceName, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GIT_USERNAME", gitUserName, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GITHUB_ORGANIZATION", githubOrganization, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GIT_PROVIDER", gitProvider, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.DEFAULT_CD_LOGS_BUCKET_REGION", defaultCDLogsBucketRegion, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
 
 externaSecretRegion = `env:
   AWS_REGION: ` + externalSecretAmazonRegion;
 
-yamlEdit(devtron, `data.dt-k8s-external-secret\.yaml`, externaSecretRegion, 2);
+kubeYamlEdit(devtron, `data.dt-k8s-external-secret\.yaml`, externaSecretRegion, `/ConfigMap//devtron-cluster-components`);
 
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
@@ -405,7 +412,7 @@ log("executed git sensor setup");
 imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
 log("executed image scanner setup");
 kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
-llog("executed kubewatch setup");
+log("executed kubewatch setup");
 lens = kubectl apply -n devtroncd lens -u lensOverride;
 log("executed lens setup");
 notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
@@ -426,7 +433,7 @@ workflowConfig = workflowConfig + `
 containerRuntimeExecutor: pns
 executor:
   imagePullPolicy: Always`;
-yamlEdit(workflow, "data.config", workflowConfig, 10);
+kubeYamlEdit(workflow, "data.config", workflowConfig, `/ConfigMap//workflow-controller-configmap`);
 workflow = kubectl apply -n argo workflow -u workflowOverride;
 log("executed workflow setup");
 postgresPlainPwd = base64DecoderPrefix + `echo "` + postgresqlPassword + `" | tr -d ':\n' ` + base64DecoderSuffix;
@@ -435,6 +442,6 @@ clairPosrgresUrl = "postgres://postgres:"+ postgresPlainPwd +"@postgresql-postgr
 yamlEdit(clairConfig, "clair.database.options.source", clairPosrgresUrl, 0);
 clairEncodedConfig = base64EncoderPrefix + `echo "` + clairConfig + `"` + base64EncoderSuffix;
 clairEncodedConfig = shellScript clairEncodedConfig;
-yamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, 0);
+kubeYamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, `/Secret//clair`);
 clair = kubectl apply -n devtroncd clair -u clairOverride;
-log("executed clair setup");
+log("executed clair setup");	

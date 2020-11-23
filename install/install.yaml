@@ -242,6 +242,8 @@ metadata:
 spec:
   minReadySeconds: 60
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: inception
