@@ -4,4 +4,4 @@ metadata:
   name: installer-devtron
   namespace: devtroncd
 spec:
-  url: https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/installation-script
+  url: https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/acd-1.2.1/installation-script
