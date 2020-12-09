@@ -9,7 +9,6 @@ grafanaPassword = jsonSelect(operatorSecret, "data.GRAFANA_PASSWORD");
 baseURLScheme = jsonSelect(operatorConfigMap, "data.BASE_URL_SCHEME");
 baseURL = jsonSelect(operatorConfigMap, "data.BASE_URL");
 dexConfig = jsonSelect(operatorConfigMap, "data.DEX_CONFIG");
-gitlabNamespaceId = jsonSelect(operatorConfigMap, "data.GITLAB_NAMESPACE_ID");
 gitlabNamespaceName = jsonSelect(operatorConfigMap, "data.GITLAB_NAMESPACE_NAME");
 gitUserName = jsonSelect(operatorConfigMap, "data.GIT_USERNAME");
 githubOrganization = jsonSelect(operatorConfigMap, "data.GITHUB_ORGANIZATION");
@@ -22,6 +21,7 @@ chartmuseumStorageAmazonBucket = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM
 chartmuseumStorageAmazonRegion = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION");
 externalSecretAmazonRegion = jsonSelect(operatorConfigMap, "data.EXTERNAL_SECRET_AMAZON_REGION");
 prometheusUrl = jsonSelect(operatorConfigMap, "data.PROMETHEUS_URL");
+gitHost = jsonSelect(operatorConfigMap, "data.GIT_HOST");
 
 passwordGen = `#!/bin/bash
 openssl rand -base64 20 | base64 | tr -d ':\n' | tr -d '=' | base64 | tr -d ':\n'`;
@@ -383,7 +383,6 @@ kubeYamlEdit(devtron, "data.GRAFANA_PASSWORD", grafanaPassword, `/Secret//devtro
 
 
 kubeYamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURLScheme + "://" + baseURL+"/orchestrator/webhook/ext-ci", `/ConfigMap//devtron-cm`);
-kubeYamlEdit(devtron, "data.GITLAB_NAMESPACE_ID", gitlabNamespaceId, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GITLAB_NAMESPACE_NAME", gitlabNamespaceName, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GIT_USERNAME", gitUserName, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GITHUB_ORGANIZATION", githubOrganization, `/ConfigMap//devtron-cm`);
@@ -393,6 +392,7 @@ kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, `/ConfigM
 kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.GIT_HOST", gitHost, `/ConfigMap//devtron-cm`);
 
 externaSecretRegion = `env:
   AWS_REGION: ` + externalSecretAmazonRegion;
