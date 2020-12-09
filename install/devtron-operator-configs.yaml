@@ -19,8 +19,7 @@ data:
   #url without scheme and without trailing '/'
   BASE_URL: "change-me"
   DEX_CONFIG: "change-me"
-  GITLAB_NAMESPACE_ID: "change-me"
-  GITLAB_NAMESPACE_NAME: "change-me" 
+  GITLAB_NAMESPACE_NAME: "change-me"
   GIT_USERNAME: "change-me"
   GITHUB_ORGANIZATION: "change-me"
   # GITHUB OR GITLAB
@@ -33,4 +32,5 @@ data:
   CHARTMUSEUM_STORAGE_AMAZON_REGION: ""
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
+  GIT_HOST: "change-me"
 

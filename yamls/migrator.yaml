@@ -40,7 +40,7 @@ spec:
         - name: MIGRATE_TO_VERSION
           value: "0"
         - name: GIT_HASH
-          value: f7932f2b9644bf9f4b81863aa2922d7bb18d1ded
+          value: dddb675e27b92a4b43072a8ad8c7071af59384e6
         envFrom:
           - secretRef:
               name: postgresql-migrator
@@ -174,7 +174,6 @@ spec:
         spec:
           containers:
           - name: chart-sync
-            image: perl
             image: quay.io/devtron/chart-sync:83282a4d-132-2199
             env:
             - name: PG_ADDR
@@ -198,7 +197,6 @@ spec:
     spec:
       containers:
       - name: chart-sync
-        image: perl
         image: quay.io/devtron/chart-sync:83282a4d-132-2199
         env:
         - name: PG_ADDR

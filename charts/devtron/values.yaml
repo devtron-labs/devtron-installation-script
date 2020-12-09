@@ -23,7 +23,6 @@ configs:
           redirectURI: <BASE_URL_SCHEME>://<BASE_URL>/api/dex/callback
           hostedDomains:
           - example.com
-  GITLAB_NAMESPACE_ID: "change-me"
   GITLAB_NAMESPACE_NAME: "change-me"
   GIT_USERNAME: "change-me"
   GITHUB_ORGANIZATION: "change-me"
@@ -37,3 +36,4 @@ configs:
   CHARTMUSEUM_STORAGE_AMAZON_REGION: ""
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
+  GIT_HOST: "change-me"
