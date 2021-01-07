@@ -237,7 +237,9 @@ if !hasPostgresql {
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 
 helmRepo = `- name: incubator
-  url: https://kubernetes-charts-incubator.storage.googleapis.com
+  url: https://charts.helm.sh/incubator
+- name: stable
+  url: https://charts.helm.sh/stable
 - name: devtron-charts
   url: https://devtron-charts.s3.us-east-2.amazonaws.com/charts`;
 
