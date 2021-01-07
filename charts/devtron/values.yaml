@@ -11,18 +11,18 @@ configs:
   BASE_URL_SCHEME: "http"
   #url without scheme and without trailing '/'
   BASE_URL: "www.example.com"
-  DEX_CONFIG: |-
-    connectors:
-      - type: oidc
-        id: google
-        name: Google
-        config:
-          issuer: https://accounts.google.com
-          clientID: xxxxxxxx-xxxxxxxxxxxxxxxxx.apps.googleusercontent.com
-          clientSecret: xxxxxxxxxxxxxxxxx
-          redirectURI: <BASE_URL_SCHEME>://<BASE_URL>/api/dex/callback
-          hostedDomains:
-          - example.com
+  #DEX_CONFIG: |-
+  #  connectors:
+  #    - type: oidc
+  #      id: google
+  #      name: Google
+  #      config:
+  #        issuer: https://accounts.google.com
+  #        clientID: xxxxxxxx-xxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+  #        clientSecret: xxxxxxxxxxxxxxxxx
+  #        redirectURI: <BASE_URL_SCHEME>://<BASE_URL>/api/dex/callback
+  #        hostedDomains:
+  #        - example.com
   GITLAB_NAMESPACE_NAME: "change-me"
   GIT_USERNAME: "change-me"
   GITHUB_ORGANIZATION: "change-me"
@@ -36,4 +36,4 @@ configs:
   CHARTMUSEUM_STORAGE_AMAZON_REGION: ""
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
-  GIT_HOST: "change-me"
+  #GIT_HOST: "change-me"
