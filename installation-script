@@ -392,7 +392,9 @@ kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, `/ConfigM
 kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
+if gitHost {
 kubeYamlEdit(devtron, "data.GIT_HOST", gitHost, `/ConfigMap//devtron-cm`);
+}
 
 externaSecretRegion = `env:
   AWS_REGION: ` + externalSecretAmazonRegion;
