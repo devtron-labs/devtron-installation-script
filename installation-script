@@ -237,11 +237,16 @@ if !hasPostgresql {
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 
 helmRepo = `- name: incubator
-  url: https://kubernetes-charts-incubator.storage.googleapis.com
+  type: helm
+  url: https://charts.helm.sh/incubator
 - name: devtron-charts
-  url: https://devtron-charts.s3.us-east-2.amazonaws.com/charts`;
+  type: helm
+  url: https://devtron-charts.s3.us-east-2.amazonaws.com/charts
+- name: stable
+  type: helm
+  url: https://charts.helm.sh/stable`;
 
-kubeYamlEdit(argocd, `data.helm\.repositories`, helmRepo, `/ConfigMap//argocd-cm` );
+kubeYamlEdit(argocd, `data.repositories`, helmRepo, `/ConfigMap//argocd-cm` );
 kubeYamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, `/ConfigMap//argocd-cm`);
 if dexConfig {
     kubeYamlEdit(argocd, `data.dex\.config`, dexConfig, `/ConfigMap//argocd-cm`);
