@@ -12,8 +12,8 @@
 
 You will need to be ready with following prerequisites before Devtron installation
  - A Kubernetes cluster (preferably K8s 1.16 or above) created on AWS (EKS or KOPS). Check [Creating a Production grade EKS cluster using EKSCTL](https://devtron.ai/blog/creating-production-grade-kubernetes-eks-cluster-eksctl/)
- - An Nginx ingress controller pre-configured within the cluster either exposed as LoadBalancer or NodePort.
- - 3 S3 buckets for ci-caching, ci-logs and chartmuseum and their access permissions added to the cluster role.
+ - A Nginx ingress controller pre-configured within the cluster either exposed as LoadBalancer or NodePort.
+ - Two S3 buckets for ci-caching and ci-logs and their access permissions added to the cluster role.
 
 
 ## Introduction
@@ -153,8 +153,6 @@ Following properties should be configured
 | **DEFAULT_CACHE_BUCKET** | AWS bucket to store docker cache, this should be created before hand (required) |  |
 | **DEFAULT_CACHE_BUCKET_REGION** | AWS region of cache bucket defined in previous step (required) | |
 | **DEFAULT_BUILD_LOGS_BUCKET** | AWS bucket to store build logs, this should be created before hand (required) | |
-| **CHARTMUSEUM_STORAGE_AMAZON_BUCKET** | AWS bucket to store charts, this should be created before hand (required) |  |
-| **CHARTMUSEUM_STORAGE_AMAZON_REGION** | AWS region for bucket defined in previous step to store charts (required) | |
 | **EXTERNAL_SECRET_AMAZON_REGION** | AWS region for secret manager to pick (required) |  |
 | **PROMETHEUS_URL** | url of prometheus where all cluster data is stored, if this is wrong, you will not be able to see application metrics like cpu, ram, http status code, latency and throughput (required) |  |
 | **GIT_HOST** | if GIT_PROVIDER is GITLAB, this is required only when user want to use self hosted gitlab. provide valid git host URL | | 

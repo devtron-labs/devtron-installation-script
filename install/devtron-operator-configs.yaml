@@ -29,14 +29,12 @@ data:
   DEFAULT_CACHE_BUCKET: "change-me"
   DEFAULT_CACHE_BUCKET_REGION: "change-me"
   DEFAULT_BUILD_LOGS_BUCKET: "change-me"
-  CHARTMUSEUM_STORAGE_AMAZON_BUCKET: ""
-  CHARTMUSEUM_STORAGE_AMAZON_REGION: ""
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
   GIT_HOST: "change-me"
-  CLOUD_PROVIDER: "AWS" # AZURE| GCP| AWS
-  #AZURE_ACCOUNT_NAME: "test-account"  # blob storage account name
-  #AZURE_BLOB_CONTAINER_CI_LOG: "ci-log-container"  # container for ci log
-  #AZURE_BLOB_CONTAINER_CI_CACHE: "ci-cache-container" #container for ci cache,  -> versioning policy similar to aws
+  CLOUD_PROVIDER: "AZURE" # AZURE| GCP| AWS
+  AZURE_ACCOUNT_NAME: "test-account"  # blob storage account name
+  AZURE_BLOB_CONTAINER_CI_LOG: "ci-log-container"  # container for ci log
+  AZURE_BLOB_CONTAINER_CI_CACHE: "ci-cache-container" #container for ci cache,  -> versioning policy similar to aws
 
 

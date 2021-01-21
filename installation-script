@@ -18,8 +18,6 @@ defaultCDLogsBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CD_LOGS_
 defaultCacheBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET");
 defaultCacheBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET_REGION");
 defaultBuildLogsBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_BUILD_LOGS_BUCKET");
-chartmuseumStorageAmazonBucket = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET");
-chartmuseumStorageAmazonRegion = jsonSelect(operatorConfigMap, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION");
 externalSecretAmazonRegion = jsonSelect(operatorConfigMap, "data.EXTERNAL_SECRET_AMAZON_REGION");
 prometheusUrl = jsonSelect(operatorConfigMap, "data.PROMETHEUS_URL");
 gitHost = jsonSelect(operatorConfigMap, "data.GIT_HOST");
@@ -57,13 +55,13 @@ if !gitToken {
 
 
 argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/argocd.yaml");
-chartmuseum = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/chartmuseum.yaml");
 clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
 clairConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair-config.yaml");
 dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/dashboard.yaml");
-gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support/yamls/gitsensor.yaml");
+# FIXME replace with main
+gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support-2/yamls/gitsensor.yaml");
 guard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/guard.yaml");
-postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support/yamls/postgresql.yaml");
+postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support-2/yamls/postgresql.yaml");
 imageScanner = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/image-scanner.yaml");
 kubewatch = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/kubewatch.yaml");
 lens = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/lens.yaml");
@@ -80,7 +78,7 @@ namespace = download("https://raw.githubusercontent.com/devtron-labs/devtron-ins
 externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/external-secret.yaml");
 grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
 rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
-minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio.yaml");
+minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support-2/yamls/minio.yaml");
 
 postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
 argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
@@ -89,7 +87,6 @@ gitSensorOverride = download("https://raw.githubusercontent.com/devtron-labs/dev
 imageScannerOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/image-scanner.yaml");
 lensOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/lens.yaml");
 notifierOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/notifier.yaml");
-chartmuseumOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/chartmuseum.yaml");
 clairOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/clair.yaml");
 dashboardOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/dashboard.yaml");
 guardOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/guard.yaml");
@@ -326,12 +323,6 @@ kubeYamlEdit(guard, `data.cert\.pem`, crt, `/Secret//guard-secret`);
 kubeYamlEdit(guard, `data.key\.pem`, key, `/Secret//guard-secret`);
 kubeYamlEdit(guard, "webhooks.0.clientConfig.caBundle", cacrt, `admissionregistration.k8s.io/ValidatingWebhookConfiguration//grumpy`);
 
-#chartmuseum
-kubeYamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_BUCKET", chartmuseumStorageAmazonBucket, `/ConfigMap//devtron-chartmuseum`);
-kubeYamlEdit(chartmuseum, "data.CHARTMUSEUM_STORAGE_AMAZON_REGION", chartmuseumStorageAmazonRegion, `/ConfigMap//devtron-chartmuseum`);
-chartmuseum = kubectl apply -n devtroncd chartmuseum -u chartmuseumOverride;
-log("executed chartmuseum setup");
-
 # devtron
 hasDevtron = kubectl get deployment "devtron" -n devtroncd;
 orchToken = shellScript passwordGen;
@@ -412,8 +403,9 @@ kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
 if gitHost {
   kubeYamlEdit(devtron, "data.GIT_HOST", gitHost, `/ConfigMap//devtron-cm`);
 }
+kubeYamlEdit(devtron, "data.CLOUD_PROVIDER", cloudProvider, `/ConfigMap//devtron-cm`);
+
 if cloudProvider=="AZURE" {
-  kubeYamlEdit(devtron, "data.CLOUD_PROVIDER", cloudProvider, `/ConfigMap//devtron-cm`);
   kubeYamlEdit(devtron, "data.AZURE_ACCOUNT_NAME", azureAccountName, `/ConfigMap//devtron-cm`);
   kubeYamlEdit(devtron, "data.AZURE_BLOB_CONTAINER_CI_LOG", azureBlobContainerCiLog, `/ConfigMap//devtron-cm`);
   kubeYamlEdit(devtron, "data.AZURE_BLOB_CONTAINER_CI_CACHE", azureBlobContainerCiCache, `/ConfigMap//devtron-cm`);
@@ -446,13 +438,15 @@ log("executed notifier setup");
 
 if cloudProvider=="AZURE" {
 # ---------------- workflow secret start
+azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `"` + base64EncoderSuffix;
+azureAccountNameEncoded = shellScript azureAccountNameEncoded;
 workflowSecret = `
 apiVersion: v1
 data:
   accessKey: `;
-workflowSecret = workflowSecret + azureAccountName;
+workflowSecret = workflowSecret + azureAccountNameEncoded;
 workflowSecret = workflowSecret + `
-  secretKey:`;
+  secretKey: `;
 workflowSecret = workflowSecret + azureAccountKey;
 workflowSecret = workflowSecret + `
 kind: Secret
@@ -515,7 +509,7 @@ log("executed clair setup");
 
 # -------minio start
 if cloudProvider=="AZURE" {
-  kubeYamlEdit(minio, "data.accesskey", azureAccountName, `/Secret//devtron-minio`);
+  kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
   kubeYamlEdit(minio, "data.secretkey", azureAccountKey, `/Secret//devtron-minio`);
   minio = kubectl apply -n devtroncd minio;
   log("executed minio setup");
