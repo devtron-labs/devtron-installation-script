@@ -7,6 +7,9 @@ secrets:
     value: "XXXXXXXXXXXXXXXXXXXX"
   - key: WEBHOOK_TOKEN
     value: "XXXXXXXXXXXXXXXXXXXX"
+#  - key: AZURE_ACCOUNT_KEY  # token with read write access to AZURE_BLOB_CONTAINER_CI_LOG and AZURE_BLOB_CONTAINER_CI_CACHE ,optional, if not provided pod identity will be used for authentication
+#    value: "#########"
+
 configs:
   BASE_URL_SCHEME: "http"
   #url without scheme and without trailing '/'
@@ -37,3 +40,8 @@ configs:
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
   #GIT_HOST: "change-me"
+  CLOUD_PROVIDER: "AWS" # AZURE| GCP| AWS
+  #AZURE_ACCOUNT_NAME: "test-account"  # blob storage account name
+  #AZURE_BLOB_CONTAINER_CI_LOG: "ci-log-container"  # container for ci log
+  #AZURE_BLOB_CONTAINER_CI_CACHE: "ci-cache-container" #container for ci cache,  -> versioning policy similar to aws
+

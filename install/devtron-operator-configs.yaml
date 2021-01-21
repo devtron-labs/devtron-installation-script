@@ -8,6 +8,7 @@ data:
   POSTGRESQL_PASSWORD: Y2hhbmdlX21l
   GIT_TOKEN: Y2hhbmdlX21l
   WEBHOOK_TOKEN: Y2hhbmdlX21l
+  AZURE_ACCOUNT_KEY: Y2hhbmdlX21l # token with read write access to AZURE_BLOB_CONTAINER_CI_LOG and AZURE_BLOB_CONTAINER_CI_CACHE ,optional, if not provided pod identity will be used for authentication
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -33,4 +34,9 @@ data:
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
   GIT_HOST: "change-me"
+  CLOUD_PROVIDER: "AWS" # AZURE| GCP| AWS
+  #AZURE_ACCOUNT_NAME: "test-account"  # blob storage account name
+  #AZURE_BLOB_CONTAINER_CI_LOG: "ci-log-container"  # container for ci log
+  #AZURE_BLOB_CONTAINER_CI_CACHE: "ci-cache-container" #container for ci cache,  -> versioning policy similar to aws
+
 
