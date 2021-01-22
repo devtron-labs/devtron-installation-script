@@ -438,7 +438,7 @@ log("executed notifier setup");
 
 if cloudProvider=="AZURE" {
 # ---------------- workflow secret start
-azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `"` + base64EncoderSuffix;
+azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `" | tr -d ':\n' ` + base64EncoderSuffix;
 azureAccountNameEncoded = shellScript azureAccountNameEncoded;
 workflowSecret = `
 apiVersion: v1
