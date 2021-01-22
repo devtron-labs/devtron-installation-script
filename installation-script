@@ -58,10 +58,9 @@ argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-instal
 clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
 clairConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair-config.yaml");
 dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/dashboard.yaml");
-# FIXME replace with main
-gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support-2/yamls/gitsensor.yaml");
+gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/gitsensor.yaml");
 guard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/guard.yaml");
-postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support-2/yamls/postgresql.yaml");
+postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/postgresql.yaml");
 imageScanner = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/image-scanner.yaml");
 kubewatch = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/kubewatch.yaml");
 lens = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/lens.yaml");
@@ -78,7 +77,7 @@ namespace = download("https://raw.githubusercontent.com/devtron-labs/devtron-ins
 externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/external-secret.yaml");
 grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
 rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
-minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/aks-support-2/yamls/minio.yaml");
+minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio.yaml");
 
 postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
 argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
