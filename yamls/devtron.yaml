@@ -79,6 +79,8 @@ data:
   DEX_URL: "http://argocd-dex-server.devtroncd:5556/dex"
   CExpirationTime: "600"
   JwtExpirationTime: "120"
+  ACD_CM: "argocd-cm"
+  ACD_NAMESPACE: "devtroncd"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -166,7 +168,7 @@ spec:
       serviceAccountName: devtron
       containers:
         - name: devtron
-          image: "quay.io/devtron/devtron:488e9c5b-146-2981"
+          image: "quay.io/devtron/devtron:3ccd61dc-146-3015"
           imagePullPolicy: IfNotPresent
           ports:
             - name: devtron
