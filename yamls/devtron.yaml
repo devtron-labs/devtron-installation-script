@@ -79,6 +79,8 @@ data:
   DEX_URL: "http://argocd-dex-server.devtroncd:5556/dex"
   CExpirationTime: "600"
   JwtExpirationTime: "120"
+  ACD_CM: "argocd-cm"
+  ACD_NAMESPACE: "devtroncd"
 ---
 apiVersion: v1
 kind: ConfigMap
