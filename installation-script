@@ -291,7 +291,7 @@ kubeYamlEdit(lens, "data.PG_PASSWORD", postgresqlPassword, `/Secret//lens-secret
 
 #migrator
 #delete migrator job
-kubectl -n devtroncd delete Job  postgresql-migrate-devtron postgresql-migrate-casbin postgresql-migrate-gitsensor  postgresql-migrate-lens
+kubectl delete -n devtroncd Job  postgresql-migrate-devtron postgresql-migrate-casbin postgresql-migrate-gitsensor  postgresql-migrate-lens
 kubeYamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, `/Secret//postgresql-migrator`);
 migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
 log("executed migrator setup command");
