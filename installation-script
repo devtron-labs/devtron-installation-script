@@ -406,7 +406,7 @@ kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
 if gitHost {
   kubeYamlEdit(devtron, "data.GIT_HOST", gitHost, `/ConfigMap//devtron-cm`);
 }
-if ! cloudProvider {
+if !cloudProvider {
   cloudProvider="AWS";
 }
 kubeYamlEdit(devtron, "data.CLOUD_PROVIDER", cloudProvider, `/ConfigMap//devtron-cm`);
