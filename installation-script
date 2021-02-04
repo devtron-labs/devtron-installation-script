@@ -421,7 +421,7 @@ if cloudProvider=="AZURE" {
 externaSecretRegion = `env:
   AWS_REGION: ` + externalSecretAmazonRegion;
 
-kubeYamlEdit(devtron, `data.dt-k8s-external-secret\.yaml`, externaSecretRegion, `/ConfigMap//devtron-cluster-components`);
+kubeYamlEdit(devtron, `data.dt-k8s-external-secrets\.yaml`, externaSecretRegion, `/ConfigMap//devtron-cluster-components`);
 
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
