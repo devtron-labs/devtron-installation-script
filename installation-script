@@ -57,7 +57,7 @@ if !gitToken {
 argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/argocd.yaml");
 clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
 clairConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair-config.yaml");
-dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/dashboard.yaml");
+dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/component-git-hash/yamls/dashboard.yaml");
 gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/gitsensor.yaml");
 guard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/guard.yaml");
 postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/postgresql.yaml");
@@ -69,7 +69,7 @@ natsOperator = download("https://raw.githubusercontent.com/devtron-labs/devtron-
 natsServer = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-server.yaml");
 natsStreaming = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-streaming.yaml");
 notifier = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/notifier.yaml");
-devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron.yaml");
+devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/component-git-hash/yamls/devtron.yaml");
 devtronDexIngress = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
 workflow = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/workflow.yaml");
 serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/serviceaccount.yaml");
