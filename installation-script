@@ -78,7 +78,7 @@ externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtro
 grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
 rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
 minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio.yaml");
-gitopsSecret =  download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/gitops-secret.yaml");
+gitopsSecret =  download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/gitops-cred-externalise/yamls/gitops-secret.yaml");
 
 postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
 argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
