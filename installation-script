@@ -239,26 +239,26 @@ if !hasPostgresql {
 #gitopssecret
 kubeYamlEdit(gitopsSecret, "data.username", gitUserName, `/Secret//devtron-gitops-secret`);
 kubeYamlEdit(gitopsSecret, "data.password", gitToken, `/Secret//devtron-gitops-secret`);
-gitopsSecret = kubectl apply -n devtroncd gitopsSecret
+gitopsSecret = kubectl apply -n devtroncd gitopsSecret;
 log("created gitopsSecret");
 # giops base url computation
 if !gitHost {
-  if gitProvider == "GITHUB"{
-    gitHost = "https://github.com"
-  }else if gitProvider == "GITLAB"{
-   gitHost = "https://gitlab.com/"
+  if gitProvider == "GITHUB" {
+    gitHost = "https://github.com";
+} else if gitProvider == "GITLAB" {
+   gitHost = "https://gitlab.com/";
   }
 }
 
-gitopsRepoCred = ``- passwordSecret:
-    name: my-secret
+gitopsRepoCred = `- passwordSecret:
+    name: devtron-gitops-secret
     key: password
   usernameSecret:
-    name: my-secret
+    name: devtron-gitops-secret
     key: username
-  url: `
+  url: `;
 
-gitopsRepoCred = gitopsRepoCred+ gitHost
+gitopsRepoCred = gitopsRepoCred+ gitHost;
 
 #argocd
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
