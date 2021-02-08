@@ -78,6 +78,7 @@ externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtro
 grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
 rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
 minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio.yaml");
+gitopsSecret =  download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/gitops-secret.yaml");
 
 postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
 argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
@@ -235,6 +236,30 @@ if !hasPostgresql {
 	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 	log("created postgresql");
 }
+#gitopssecret
+kubeYamlEdit(gitopsSecret, "data.username", gitUserName, `/Secret//devtron-gitops-secret`);
+kubeYamlEdit(gitopsSecret, "data.password", gitToken, `/Secret//devtron-gitops-secret`);
+gitopsSecret = kubectl apply -n devtroncd gitopsSecret
+log("created gitopsSecret");
+# giops base url computation
+if !gitHost {
+  if gitProvider == "GITHUB"{
+    gitHost = "https://github.com"
+  }else if gitProvider == "GITLAB"{
+   gitHost = "https://gitlab.com/"
+  }
+}
+
+gitopsRepoCred = ``- passwordSecret:
+    name: my-secret
+    key: password
+  usernameSecret:
+    name: my-secret
+    key: username
+  url: `
+
+gitopsRepoCred = gitopsRepoCred+ gitHost
+
 #argocd
 hasArgocd = kubectl get deployment argocd-server -n devtroncd;
 
@@ -250,6 +275,8 @@ helmRepo = `- name: incubator
 
 kubeYamlEdit(argocd, `data.repositories`, helmRepo, `/ConfigMap//argocd-cm` );
 kubeYamlEdit(argocd, "data.url", baseURLScheme + "://" + baseURL, `/ConfigMap//argocd-cm`);
+kubeYamlEdit(argocd, `data.repository\.credentials`, gitopsRepoCred, `/ConfigMap//argocd-cm` );
+
 if dexConfig {
     kubeYamlEdit(argocd, `data.dex\.config`, dexConfig, `/ConfigMap//argocd-cm`);
 }
