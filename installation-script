@@ -237,7 +237,9 @@ if !hasPostgresql {
 	log("created postgresql");
 }
 #gitopssecret
-kubeYamlEdit(gitopsSecret, "data.username", gitUserName, `/Secret//devtron-gitops-secret`);
+gitUserNameBase64 = base64EncoderPrefix + `echo "` + gitUserName + `" | tr -d ':\n' ` + base64EncoderSuffix;
+gitUserNameBase64 = shellScript gitUserNameBase64;
+kubeYamlEdit(gitopsSecret, "data.username", gitUserNameBase64, `/Secret//devtron-gitops-secret`);
 kubeYamlEdit(gitopsSecret, "data.password", gitToken, `/Secret//devtron-gitops-secret`);
 gitopsSecret = kubectl apply -n devtroncd gitopsSecret;
 log("created gitopsSecret");
