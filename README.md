@@ -131,7 +131,6 @@ Following properties should be configured
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **POSTGRESQL_PASSWORD** | password for postgres database, should be base64 encoded (required) | change-me |
-| **GIT_TOKEN** | git token for the gitops work flow, please note this is not for source code of repo and this token should have full access to create, delete, update repository, should be base64 encoded (required) |  |
 | **WEBHOOK_TOKEN** | If you want to continue using jenkins for CI then please provide this for authentication of requests, should be base64 encoded  |  |
 
 #### Configure ConfigMaps
@@ -145,17 +144,12 @@ Following properties should be configured
 | **BASE_URL_SCHEME** | either of http or https (required) | http |
 | **BASE_URL** | url without scheme and trailing slash, this is the domain pointing to the cluster on which devtron platform is being installed. For example if you have directed domain `devtron.example.com` to the cluster and ingress controller is listening on port `32080` then url will be `devtron.example.com:32080` (required) | `change-me` |
 | **DEX_CONFIG** | dex config if you want to integrate login with SSO (optional) for more information check [Argocd documentation](https://argoproj.github.io/argo-cd/operator-manual/user-management/) | 
-| **GIT_PROVIDER** | git provider for storing config files for gitops, currently only GITHUB and GITLAB are supported (required) | `GITHUB` | |
-| **GITLAB_NAMESPACE_NAME** | if GIT_PROVIDER is GITLAB, this is mandatory and should be already created | |
-| **GIT_USERNAME** | git username for the GIT_PROVIDER  (required) | |
-| **GITHUB_ORGANIZATION** | if GIT_PROVIDER is GITHUB, this is mandatory and should be already created | |
 | **DEFAULT_CD_LOGS_BUCKET_REGION** | AWS region of bucket to store CD logs, this should be created before hand (required) | |
 | **DEFAULT_CACHE_BUCKET** | AWS bucket to store docker cache, this should be created before hand (required) |  |
 | **DEFAULT_CACHE_BUCKET_REGION** | AWS region of cache bucket defined in previous step (required) | |
 | **DEFAULT_BUILD_LOGS_BUCKET** | AWS bucket to store build logs, this should be created before hand (required) | |
 | **EXTERNAL_SECRET_AMAZON_REGION** | AWS region for secret manager to pick (required) |  |
 | **PROMETHEUS_URL** | url of prometheus where all cluster data is stored, if this is wrong, you will not be able to see application metrics like cpu, ram, http status code, latency and throughput (required) |  |
-| **GIT_HOST** | if GIT_PROVIDER is GITLAB, this is required only when user want to use self hosted gitlab. provide valid git host URL | | 
 
 example of DEX_CONFIG is
 

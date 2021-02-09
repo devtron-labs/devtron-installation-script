@@ -2,7 +2,6 @@ operatorSecret = kubectl get secret -n devtroncd devtron-operator-secret;
 operatorConfigMap = kubectl get cm -n devtroncd devtron-operator-cm;
 postgresqlPassword = jsonSelect(operatorSecret, "data.POSTGRESQL_PASSWORD");
 acdPassword = jsonSelect(operatorSecret, "data.ACD_PASSWORD");
-gitToken = jsonSelect(operatorSecret, "data.GIT_TOKEN");
 webHookToken = jsonSelect(operatorSecret, "data.WEBHOOK_TOKEN");
 grafanaPassword = jsonSelect(operatorSecret, "data.GRAFANA_PASSWORD");
 azureAccountKey = jsonSelect(operatorSecret, "data.AZURE_ACCOUNT_KEY");
@@ -10,17 +9,12 @@ azureAccountKey = jsonSelect(operatorSecret, "data.AZURE_ACCOUNT_KEY");
 baseURLScheme = jsonSelect(operatorConfigMap, "data.BASE_URL_SCHEME");
 baseURL = jsonSelect(operatorConfigMap, "data.BASE_URL");
 dexConfig = jsonSelect(operatorConfigMap, "data.DEX_CONFIG");
-gitlabNamespaceName = jsonSelect(operatorConfigMap, "data.GITLAB_NAMESPACE_NAME");
-gitUserName = jsonSelect(operatorConfigMap, "data.GIT_USERNAME");
-githubOrganization = jsonSelect(operatorConfigMap, "data.GITHUB_ORGANIZATION");
-gitProvider = jsonSelect(operatorConfigMap, "data.GIT_PROVIDER");
 defaultCDLogsBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CD_LOGS_BUCKET_REGION");
 defaultCacheBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET");
 defaultCacheBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUCKET_REGION");
 defaultBuildLogsBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_BUILD_LOGS_BUCKET");
 externalSecretAmazonRegion = jsonSelect(operatorConfigMap, "data.EXTERNAL_SECRET_AMAZON_REGION");
 prometheusUrl = jsonSelect(operatorConfigMap, "data.PROMETHEUS_URL");
-gitHost = jsonSelect(operatorConfigMap, "data.GIT_HOST");
 
 cloudProvider = jsonSelect(operatorConfigMap, "data.CLOUD_PROVIDER");
 azureAccountName = jsonSelect(operatorConfigMap, "data.AZURE_ACCOUNT_NAME");
@@ -49,10 +43,6 @@ if !postgresqlPassword {
 if !baseURL {
 	log("baseURL is mandatory");
 }
-if !gitToken {
-	log("gitToken is mandatory");
-}
-
 
 argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/argocd.yaml");
 clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
@@ -336,7 +326,6 @@ dexCStoreKey = shellScript passwordGen;
 externalCIAPISecret = shellScript passwordGen;
 
 kubeYamlEdit(devtron, "data.PG_PASSWORD", postgresqlPassword, `/Secret//devtron-secret`);
-kubeYamlEdit(devtron, "data.GIT_TOKEN", gitToken, `/Secret//devtron-secret`);
 if cloudProvider=="AZURE" {
  kubeYamlEdit(devtron, "data.AZURE_ACCOUNT_KEY", azureAccountKey, `/Secret//devtron-secret`);
 }
@@ -394,18 +383,12 @@ kubeYamlEdit(devtron, "data.GRAFANA_PASSWORD", grafanaPassword, `/Secret//devtro
 
 
 kubeYamlEdit(devtron, "data.EXTERNAL_CI_WEB_HOOK_URL", baseURLScheme + "://" + baseURL+"/orchestrator/webhook/ext-ci", `/ConfigMap//devtron-cm`);
-kubeYamlEdit(devtron, "data.GITLAB_NAMESPACE_NAME", gitlabNamespaceName, `/ConfigMap//devtron-cm`);
-kubeYamlEdit(devtron, "data.GIT_USERNAME", gitUserName, `/ConfigMap//devtron-cm`);
-kubeYamlEdit(devtron, "data.GITHUB_ORGANIZATION", githubOrganization, `/ConfigMap//devtron-cm`);
-kubeYamlEdit(devtron, "data.GIT_PROVIDER", gitProvider, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.DEFAULT_CD_LOGS_BUCKET_REGION", defaultCDLogsBucketRegion, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET", defaultCacheBucket, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegion, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
-if gitHost {
-  kubeYamlEdit(devtron, "data.GIT_HOST", gitHost, `/ConfigMap//devtron-cm`);
-}
+
 if !cloudProvider {
   cloudProvider="AWS";
 }
