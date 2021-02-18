@@ -15,9 +15,7 @@ metadata:
   name: devtron-operator-cm
   namespace: devtroncd
 data:
-  BASE_URL_SCHEME: "http"
   #url without scheme and without trailing '/'
-  BASE_URL: "change-me"
   DEX_CONFIG: "change-me"
   DEFAULT_CD_LOGS_BUCKET_REGION: "change-me"
   DEFAULT_CACHE_BUCKET: "change-me"
