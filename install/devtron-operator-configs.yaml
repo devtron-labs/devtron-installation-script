@@ -16,7 +16,6 @@ metadata:
   namespace: devtroncd
 data:
   #url without scheme and without trailing '/'
-  DEX_CONFIG: "change-me"
   DEFAULT_CD_LOGS_BUCKET_REGION: "change-me"
   DEFAULT_CACHE_BUCKET: "change-me"
   DEFAULT_CACHE_BUCKET_REGION: "change-me"

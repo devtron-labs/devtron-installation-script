@@ -9,19 +9,6 @@ secrets:
 #    value: "#########"
 
 configs:
-  #url without scheme and without trailing '/'
-  #DEX_CONFIG: |-
-  #  connectors:
-  #    - type: oidc
-  #      id: google
-  #      name: Google
-  #      config:
-  #        issuer: https://accounts.google.com
-  #        clientID: xxxxxxxx-xxxxxxxxxxxxxxxxx.apps.googleusercontent.com
-  #        clientSecret: xxxxxxxxxxxxxxxxx
-  #        redirectURI: <BASE_URL_SCHEME>://<BASE_URL>/api/dex/callback
-  #        hostedDomains:
-  #        - example.com
   DEFAULT_CD_LOGS_BUCKET_REGION: "change-me"
   DEFAULT_CACHE_BUCKET: "change-me"
   DEFAULT_CACHE_BUCKET_REGION: "change-me"
