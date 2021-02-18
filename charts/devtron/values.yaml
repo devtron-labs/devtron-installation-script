@@ -9,9 +9,7 @@ secrets:
 #    value: "#########"
 
 configs:
-  BASE_URL_SCHEME: "http"
   #url without scheme and without trailing '/'
-  BASE_URL: "www.example.com"
   #DEX_CONFIG: |-
   #  connectors:
   #    - type: oidc
