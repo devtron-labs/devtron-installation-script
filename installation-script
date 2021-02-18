@@ -415,15 +415,28 @@ if !setupDevtronIngress {
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
 
-#if devtronIngressAnnotations {
-#    log("editing ingress");
-#	kubeYamlEdit(devtronDexIngress, "metadata", devtronIngressAnnotations, `extensions/Ingress//devtron-ingress`);
-#}
+if devtronIngressAnnotations {
+    log("editing ingress");
+	kubeYamlEdit(devtronDexIngress, "metadata", devtronIngressAnnotations, `extensions/Ingress//devtron-ingress`);
+}
 
-#if setupDevtronIngress {
-#  log("setup ingress");
-#  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
-#}
+if setupDevtronIngress {
+  log("fetch ingress");
+  existingIngress = kubectl get -n devtroncd ing devtron-ingress;
+}
+
+if existingIngress {
+	annotations = jsonSelect(existingIngress, "metadata.annotations");
+}
+
+if annotations {
+  kubeYamlEdit(devtronDexIngress, "metadata.annotations", annotations, `extensions/Ingress//devtron-ingress`);
+}
+
+if setupDevtronIngress {
+  log("setup ingress");
+ devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
+}
 
 log("executed devtron ingress setup");
 guard = kubectl apply -n devtroncd guard -u guardOverride;
