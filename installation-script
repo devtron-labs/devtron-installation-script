@@ -417,7 +417,7 @@ log("executed devtron setup");
 
 if devtronIngressAnnotations {
     log("editing ingress");
-	kubeYamlEdit(devtronDexIngress, "metadata", devtronIngressAnnotations, `extensions/Ingress//devtron-ingress`);
+	kubeYamlEdit(devtronDexIngress, "metadata.annotations", devtronIngressAnnotations, `extensions/Ingress//devtron-ingress`);
 }
 
 if setupDevtronIngress {
@@ -435,7 +435,7 @@ if annotations {
 
 if setupDevtronIngress {
   log("setup ingress");
- devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
+  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
 }
 
 log("executed devtron ingress setup");
