@@ -436,10 +436,10 @@ if annotations {
 if setupDevtronIngress {
   log("setup ingress");
   devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
-  log(devtronDexIngress)
+  log(devtronDexIngress);
   
   recheck = kubectl get -n devtroncd ing devtron-ingress;
-  log(recheck)
+  log(recheck);
   
 }
 
