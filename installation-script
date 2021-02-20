@@ -15,6 +15,8 @@ defaultCacheBucketRegion = jsonSelect(operatorConfigMap, "data.DEFAULT_CACHE_BUC
 defaultBuildLogsBucket = jsonSelect(operatorConfigMap, "data.DEFAULT_BUILD_LOGS_BUCKET");
 externalSecretAmazonRegion = jsonSelect(operatorConfigMap, "data.EXTERNAL_SECRET_AMAZON_REGION");
 prometheusUrl = jsonSelect(operatorConfigMap, "data.PROMETHEUS_URL");
+setupDevtronIngress = jsonSelect(operatorConfigMap, "data.ENABLE_INGRESS");
+devtronIngressAnnotations = jsonSelect(operatorConfigMap, "data.INGRESS_ANNOTATIONS");
 
 cloudProvider = jsonSelect(operatorConfigMap, "data.CLOUD_PROVIDER");
 azureAccountName = jsonSelect(operatorConfigMap, "data.AZURE_ACCOUNT_NAME");
@@ -406,9 +408,36 @@ externaSecretRegion = `env:
 
 kubeYamlEdit(devtron, `data.dt-k8s-external-secrets\.yaml`, externaSecretRegion, `/ConfigMap//devtron-cluster-components`);
 
+if !setupDevtronIngress {
+  kubeYamlEdit(devtron, "spec.type", "LoadBalancer", `/Service//devtron-service`);
+}
+
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
-devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
+
+if devtronIngressAnnotations {
+    log("editing ingress");
+	kubeYamlEdit(devtronDexIngress, "metadata.annotations", devtronIngressAnnotations, `extensions/Ingress//devtron-ingress`);
+}
+
+if setupDevtronIngress {
+  log("fetch ingress");
+  existingIngress = kubectl get -n devtroncd ing devtron-ingress;
+}
+
+if existingIngress {
+	annotations = jsonSelect(existingIngress, "metadata.annotations");
+}
+
+if annotations {
+  kubeYamlEdit(devtronDexIngress, "metadata.annotations", annotations, `extensions/Ingress//devtron-ingress`);
+}
+
+if setupDevtronIngress {
+  log("setup ingress");
+  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
+}
+
 log("executed devtron ingress setup");
 guard = kubectl apply -n devtroncd guard -u guardOverride;
 log("executed guard setup");
