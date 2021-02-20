@@ -411,6 +411,8 @@ kubeYamlEdit(devtron, `data.dt-k8s-external-secrets\.yaml`, externaSecretRegion,
 if !setupDevtronIngress {
   kubeYamlEdit(devtron, "spec.type", "LoadBalancer", `/Service//devtron-service`);
 }
+log("devtron--------------------------------------");
+log(devtron)
 
 devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
