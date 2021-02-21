@@ -49,7 +49,7 @@ if !baseURL {
 argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/argocd.yaml");
 clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
 clairConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair-config.yaml");
-dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/dex-changes/yamls/dashboard.yaml");
+dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/dashboard.yaml");
 gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/gitsensor.yaml");
 guard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/guard.yaml");
 postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/postgresql.yaml");
@@ -61,8 +61,8 @@ natsOperator = download("https://raw.githubusercontent.com/devtron-labs/devtron-
 natsServer = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-server.yaml");
 natsStreaming = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-streaming.yaml");
 notifier = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/notifier.yaml");
-devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/dex-changes/yamls/devtron.yaml");
-devtronDexIngress = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/dex-changes/yamls/devtron-dex-ingress.yaml");
+devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron.yaml");
+devtronDexIngress = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
 workflow = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/workflow.yaml");
 serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/serviceaccount.yaml");
 namespace = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/namespace.yaml");
@@ -435,13 +435,7 @@ if annotations {
 
 if setupDevtronIngress {
   log("setup ingress");
-  log(devtronDexIngress);
   devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
-  log(devtronDexIngress);
-  
-  recheck = kubectl get -n devtroncd ing devtron-ingress;
-  log(recheck);
-  
 }
 
 log("executed devtron ingress setup");
