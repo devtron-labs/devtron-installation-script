@@ -83,6 +83,8 @@ data:
   JwtExpirationTime: "120"
   ACD_CM: "argocd-cm"
   ACD_NAMESPACE: "devtroncd"
+  MINIO_ENDPOINT: http://devtron-minio:9000
+
 ---
 apiVersion: v1
 kind: ConfigMap
