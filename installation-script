@@ -113,9 +113,9 @@ if cloudProvider=="AZURE" {
     kubeYamlEdit(minioStorage, "data.accesskey", minioAccesskey, `/Secret//devtron-minio`);
     kubeYamlEdit(minioStorage, "data.secretkey", minioSecretkey, `/Secret//devtron-minio`);
     minioStorage = kubectl apply -n devtroncd minioStorage ;
-    //TODO creat bucket
+    #//TODO creat bucket
   }else {
-    //get secert
+    #//get secert
     minioSecret = kubectl get secret devtron-minio -n devtroncd;
     minioAccesskey = jsonSelect(minioSecret, "data.accesskey");
     minioSecretkey = jsonSelect(minioSecret, "data.secretkey");
