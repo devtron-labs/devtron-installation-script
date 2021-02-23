@@ -101,9 +101,9 @@ if cloudProvider=="AZURE" {
   minio = kubectl apply -n devtroncd minio;
   log("executed minio setup");
 } else if cloudProvider=="MINIO" {
-  minioAccesskey = ""
-  minioSecretkey  = ""
-  minioEndpoint = "http://devtron-minio:9000"
+  minioAccesskey = "";
+  minioSecretkey  = "";
+  minioEndpoint = "http://devtron-minio:9000";
 
   #check if minio exists
   hasMinio = kubectl get sts devtron-minio -n devtroncd;
