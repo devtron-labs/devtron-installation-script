@@ -102,6 +102,9 @@ if cloudProvider=="AZURE" {
   log("executed minio setup");
 } else if cloudProvider=="MINIO" {
   #check if minio exists
+  minioAccesskey = ""
+  minioSecretkey  = ""
+
   hasMinio = kubectl get sts devtron-minio -n devtroncd;
   if !hasMinio {
     minioAccesskey = shellScript passwordGen;
@@ -111,6 +114,12 @@ if cloudProvider=="AZURE" {
     minioStorage = kubectl apply -n devtroncd minioStorage ;
   }else {
     //get secert
+    minioSecret = kubectl get secret devtron-minio -n devtroncd;
+    minioAccesskey = jsonSelect(minioSecret, "data.accesskey");
+    minioSecretkey = jsonSelect(minioSecret, "data.secretkey");
+    log("minioSecretkey");
   }
+  log(minioAccesskey);
+  log(minioSecretkey);
 }
 # --------minio end
