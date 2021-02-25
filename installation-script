@@ -168,7 +168,7 @@ serve_from_sub_path = true
 allow_org_create = true
  `;
 kubeYamlEdit(grafana, `data.grafana\.ini`, grafanaIni, `/ConfigMap/devtroncd/devtron-grafana`);
-#grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
+grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
 log("setup grafana");
 
 if !hasgrafana {
@@ -235,7 +235,7 @@ providers:
 
 	grafanaCm = kubectl get -n devtroncd cm devtron-grafana;
 	jsonEdit(grafanaCm, `data.dashboardproviders\.yaml`, grafanaDashboardProvider);
-#	grafanaCm = kubectl apply -n devtroncd grafanaCm;
+	grafanaCm = kubectl apply -n devtroncd grafanaCm;
 	log("setup up grafana cm with provider yaml");
 
 	allDevtroncdPo = kubectl get po -n devtroncd;
@@ -245,16 +245,16 @@ providers:
 	log("deleted grafana pod to reload configmap");
 }
 
-#namespaces = kubectl apply namespace;
+namespaces = kubectl apply namespace;
 log("created namespaces");
-#sa = kubectl apply serviceAccount;
+sa = kubectl apply serviceAccount;
 log("created service account");
 
 #externalSecret
 externalSecretAmazonRegion = base64EncoderPrefix + `echo "` + externalSecretAmazonRegion + `" | tr -d ':\n' ` + base64EncoderSuffix;
 externalSecretAmazonRegion = shellScript externalSecretAmazonRegion;
 kubeYamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, `/Secret//devtron-kubernetes-external-secret`);
-#externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
+externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
 log("created external secret");
 
 #postgresql
@@ -262,7 +262,7 @@ log("created external secret");
 hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
 	kubeYamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, `/Secret//postgresql-postgresql`);
-#	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
+	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 	log("created postgresql");
 }
 #argocd
@@ -297,13 +297,13 @@ if hasArgocd {
 	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-ssh-known-hosts-cm`);
 	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-tls-certs-cm`);
 }
-#argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
+argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 log("executed argocd setup command");
 
 #rollout
-#rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
+rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
 log("executed rollout setup command");
 
 #git-sensor
@@ -326,16 +326,16 @@ if !migDelete {
 	log("migration job deletion failed");
 }
 kubeYamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, `/Secret//postgresql-migrator`);
-#migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
+migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
 log("executed migrator setup command");
 
 #nats
-#natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
+natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
 log("executed nats operator setup");
 ignore = shellScript sleep50;
-#natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
+natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
 log("executed nats server setup");
-#natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
+natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
 log("executed nats streaming setup");
 
 #guard
@@ -450,7 +450,7 @@ if !setupDevtronIngress {
   kubeYamlEdit(devtron, "spec.type", "LoadBalancer", `/Service//devtron-service`);
 }
 
-#devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
+devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
 
 if devtronIngressAnnotations {
@@ -473,19 +473,19 @@ if annotations {
 
 if setupDevtronIngress {
   log("setup ingress");
-#  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
+  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
 }
 
 log("executed devtron ingress setup");
-#guard = kubectl apply -n devtroncd guard -u guardOverride;
+guard = kubectl apply -n devtroncd guard -u guardOverride;
 log("executed guard setup");
-#dashboard = kubectl apply -n devtroncd dashboard -u dashboardOverride;
+dashboard = kubectl apply -n devtroncd dashboard -u dashboardOverride;
 log("executed dashboard setup");
-#gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
+gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
 log("executed git sensor setup");
-#imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
+imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
 log("executed image scanner setup");
-#kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
+kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
 log("executed kubewatch setup");
 lens = kubectl apply -n devtroncd lens -u lensOverride;
 log("executed lens setup");
