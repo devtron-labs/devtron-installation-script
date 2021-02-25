@@ -584,7 +584,7 @@ workflowConfig = workflowConfig +`
 
 
 workflowConfig = workflowConfig + `
-    keyFormat: devtron/{{workflow.name}}
+     keyFormat: devtron/{{workflow.name}}
 containerRuntimeExecutor: pns
 executor:
   imagePullPolicy: Always`;

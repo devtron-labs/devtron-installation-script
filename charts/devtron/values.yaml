@@ -25,9 +25,9 @@ configs:
   #        hostedDomains:
   #        - example.com
   DEFAULT_CD_LOGS_BUCKET_REGION: "change-me"
-  DEFAULT_CACHE_BUCKET: "change-me"
+  DEFAULT_CACHE_BUCKET: "devtron-ci-cache"
   DEFAULT_CACHE_BUCKET_REGION: "change-me"
-  DEFAULT_BUILD_LOGS_BUCKET: "change-me"
+  DEFAULT_BUILD_LOGS_BUCKET: "devtron-ci-log"
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
   CLOUD_PROVIDER: "AWS" # AZURE| GCP| AWS
