@@ -125,7 +125,7 @@ if cloudProvider=="AZURE" {
 if cloudProvider=="MINIO"{
   kubeYamlEdit(devtron, "data.MINIO_ACCESS_KEY", minioAccesskey, `/Secret//devtron-secret`);
   kubeYamlEdit(devtron, "data.MINIO_SECRET_KEY", minioSecretkey, `/Secret//devtron-secret`);
-  kubeYamlEdit(devtron, "data.MINIO_ENDPOINT", minioEndpoint, `/Secret//devtron-cm`);
+  kubeYamlEdit(devtron, "data.MINIO_ENDPOINT", minioEndpoint, `/ConfigMap//devtron-cm`);
 }
 
 # minio end
