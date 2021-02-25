@@ -98,7 +98,7 @@ rolloutOverride = download("https://raw.githubusercontent.com/devtron-labs/devtr
 hasMinio = kubectl get sts devtron-minio -n devtroncd;
 minioAccesskey = "";
 minioSecretkey  = "";
-minioEndpoint = "http://devtron-minio:9000";
+minioEndpoint = "http://devtron-minio.devtroncd:9000";
 
 if cloudProvider=="AZURE" {
   kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
@@ -579,9 +579,8 @@ workflowConfig = workflowConfig +`
      secretKeySecret:                #omit if accessing via AWS IAM
        name: workflow-minio-cred
        key: secretKey
-     endpoint: `;
+     endpoint: devtron-minio.devtroncd:9000"`;
 
- workflowConfig = workflowConfig + minioEndpoint;
  }
 
 
