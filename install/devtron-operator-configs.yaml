@@ -25,7 +25,7 @@ data:
   DEFAULT_BUILD_LOGS_BUCKET: "change-me"
   EXTERNAL_SECRET_AMAZON_REGION: ""
   PROMETHEUS_URL: "http://change-me/prometheus"
-  CLOUD_PROVIDER: "AZURE" # AZURE| GCP| AWS
+  CLOUD_PROVIDER: "MINIO" # AZURE| GCP| AWS
   AZURE_ACCOUNT_NAME: "test-account"  # blob storage account name
   AZURE_BLOB_CONTAINER_CI_LOG: "ci-log-container"  # container for ci log
   AZURE_BLOB_CONTAINER_CI_CACHE: "ci-cache-container" #container for ci cache,  -> versioning policy similar to aws
