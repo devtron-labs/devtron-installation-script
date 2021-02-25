@@ -61,7 +61,7 @@ natsOperator = download("https://raw.githubusercontent.com/devtron-labs/devtron-
 natsServer = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-server.yaml");
 natsStreaming = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-streaming.yaml");
 notifier = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/notifier.yaml");
-devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron.yaml");
+devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/minio/yamls/devtron.yaml");
 devtronDexIngress = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
 workflow = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/workflow.yaml");
 serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/serviceaccount.yaml");
@@ -429,6 +429,7 @@ kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegi
 kubeYamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
 
+# set default cloud provider
 if !cloudProvider {
   cloudProvider="AWS";
 }
@@ -504,6 +505,28 @@ workflowSecret = workflowSecret + azureAccountNameEncoded;
 workflowSecret = workflowSecret + `
   secretKey: `;
 workflowSecret = workflowSecret + azureAccountKey;
+workflowSecret = workflowSecret + `
+kind: Secret
+metadata:
+  name: workflow-minio-cred
+  namespace: devtron-ci
+type: Opaque
+`;
+#----------------- workflow secret end
+
+workflowSecret = kubectl apply workflowSecret;
+}
+
+if cloudProvider=="MINIO" {
+# ---------------- workflow secret start
+workflowSecret = `
+apiVersion: v1
+data:
+  accessKey: `;
+workflowSecret = workflowSecret + minioAccesskey;
+workflowSecret = workflowSecret + `
+  secretKey: `;
+workflowSecret = workflowSecret + minioSecretkey;
 workflowSecret = workflowSecret + `
 kind: Secret
 metadata:
