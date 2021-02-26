@@ -579,8 +579,7 @@ workflowConfig = workflowConfig +`
      secretKeySecret:                #omit if accessing via AWS IAM
        name: workflow-minio-cred
        key: secretKey
-     endpoint: devtron-minio.devtroncd:9000"`;
-
+     endpoint: devtron-minio.devtroncd:9000`;
  }
 
 
