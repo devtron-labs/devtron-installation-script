@@ -601,12 +601,3 @@ kubeYamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, `/Secret//clair`);
 clair = kubectl apply -n devtroncd clair -u clairOverride;
 log("executed clair setup");
 
-# -------minio start
-if cloudProvider=="AZURE" {
-  kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
-  kubeYamlEdit(minio, "data.secretkey", azureAccountKey, `/Secret//devtron-minio`);
-  minio = kubectl apply -n devtroncd minio;
-  log("executed minio setup");
-}
-
-# --------minio end
