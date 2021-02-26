@@ -101,6 +101,8 @@ minioSecretkey  = "";
 minioEndpoint = "http://devtron-minio.devtroncd:9000";
 
 if cloudProvider=="AZURE" {
+  azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `" | tr -d ':\n' ` + base64EncoderSuffix;
+  azureAccountNameEncoded = shellScript azureAccountNameEncoded;
   kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
   kubeYamlEdit(minio, "data.secretkey", azureAccountKey, `/Secret//devtron-minio`);
   minio = kubectl apply -n devtroncd minio;
@@ -495,8 +497,6 @@ log("executed notifier setup");
 
 if cloudProvider=="AZURE" {
 # ---------------- workflow secret start
-azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `" | tr -d ':\n' ` + base64EncoderSuffix;
-azureAccountNameEncoded = shellScript azureAccountNameEncoded;
 workflowSecret = `
 apiVersion: v1
 data:
