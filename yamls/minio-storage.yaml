@@ -33,8 +33,8 @@ metadata:
     heritage: Helm
 type: Opaque
 data:
-  accesskey: "Ukh4amtnTFRaWGJSQ3Q3QlVtVnA="
-  secretkey: "dUhaMzV4Q29ROEppeGRmSHR2QWh1UDFZVlZwUGFUZlNWcHU4a1FCNA=="
+  accesskey: "OEZYTVVBcTZlTjlnOU5jV2o3S3o="
+  secretkey: "bjdjR1JLbDhza254bk8wdWRtcXJUem9YZ3JySlY1bzBCSlluV096MQ=="
 ---
 # Source: minio/templates/configmap.yaml
 apiVersion: v1
@@ -140,6 +140,9 @@ data:
     # Try connecting to Minio instance
     scheme=http
     connectToMinio $scheme
+    # Create the buckets
+    createBucket devtron-ci-log none false
+    createBucket devtron-ci-cache none false
 ---
 # Source: minio/templates/post-install-prometheus-metrics-role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -266,8 +269,8 @@ spec:
         app: minio
         release: devtron
       annotations:
-        checksum/secrets: 6edef0596af2a99b0761da012dc21fb49698037f90be786d86e5649db32cb565
-        checksum/config: 3efef55a0c7d5ffc41991c7509a1d17a5acdaed2b7a76b8e128d195bdb21739e
+        checksum/secrets: 850b2f8c1d8e151fea9b065a92d565fd62fe655998ec52222341a6a74e5b8daf
+        checksum/config: 337081c741d9233f54af572dbcab63f68ad6fd788209a6c9d443cac8307c5348
     spec:
       serviceAccountName: "devtron-minio"
       securityContext:
@@ -314,3 +317,50 @@ spec:
         resources:
           requests:
             storage: 50Gi
+---
+# Source: minio/templates/post-install-create-bucket-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: devtron-minio-make-bucket-job
+  labels:
+    app: minio-make-bucket-job
+    chart: minio-8.0.10
+    release: devtron
+    heritage: Helm
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app: minio-job
+        release: devtron
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+        - name: minio-configuration
+          projected:
+            sources:
+              - configMap:
+                  name: devtron-minio
+              - secret:
+                  name: devtron-minio
+      serviceAccountName: "devtron-minio"
+      containers:
+        - name: minio-mc
+          image: "minio/mc:RELEASE.2021-02-14T04-28-06Z"
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "/config/initialize"]
+          env:
+            - name: MINIO_ENDPOINT
+              value: devtron-minio
+            - name: MINIO_PORT
+              value: "9000"
+          volumeMounts:
+            - name: minio-configuration
+              mountPath: /config
+          resources:
+            requests:
+              memory: 128Mi
