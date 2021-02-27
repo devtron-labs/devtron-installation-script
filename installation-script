@@ -18,7 +18,7 @@ prometheusUrl = jsonSelect(operatorConfigMap, "data.PROMETHEUS_URL");
 setupDevtronIngress = jsonSelect(operatorConfigMap, "data.ENABLE_INGRESS");
 devtronIngressAnnotations = jsonSelect(operatorConfigMap, "data.INGRESS_ANNOTATIONS");
 
-cloudProvider = jsonSelect(operatorConfigMap, "data.CLOUD_PROVIDER");
+cloudProvider = jsonSelect(operatorConfigMap, "data.BLOB_STORAGE_PROVIDER");
 azureAccountName = jsonSelect(operatorConfigMap, "data.AZURE_ACCOUNT_NAME");
 azureBlobContainerCiLog = jsonSelect(operatorConfigMap, "data.AZURE_BLOB_CONTAINER_CI_LOG");
 azureBlobContainerCiCache = jsonSelect(operatorConfigMap, "data.AZURE_BLOB_CONTAINER_CI_CACHE");
@@ -70,6 +70,8 @@ externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtro
 grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
 rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
 minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio.yaml");
+minioStorage = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio-storage.yaml");
+
 
 postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
 argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
@@ -91,6 +93,44 @@ workflowOverride = download("https://raw.githubusercontent.com/devtron-labs/devt
 externalSecretOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/external-secret.yaml");
 grafanaOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/grafana.yaml");
 rolloutOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/rollout.yaml");
+
+#minio start
+hasMinio = kubectl get sts devtron-minio -n devtroncd;
+minioAccesskey = "";
+minioSecretkey  = "";
+minioEndpoint = "http://devtron-minio.devtroncd:9000";
+
+if cloudProvider=="AZURE" {
+  azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `" | tr -d ':\n' ` + base64EncoderSuffix;
+  azureAccountNameEncoded = shellScript azureAccountNameEncoded;
+  kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
+  kubeYamlEdit(minio, "data.secretkey", azureAccountKey, `/Secret//devtron-minio`);
+  minio = kubectl apply -n devtroncd minio;
+  log("executed minio setup");
+} else if cloudProvider=="MINIO" && !hasMinio {
+  log("no minio");
+  minioAccesskey = shellScript passwordGen;
+  minioSecretkey = shellScript passwordGen;
+  kubeYamlEdit(minioStorage, "data.accesskey", minioAccesskey, `/Secret//devtron-minio`);
+  kubeYamlEdit(minioStorage, "data.secretkey", minioSecretkey, `/Secret//devtron-minio`);
+    minioStorage = kubectl apply -n devtroncd minioStorage ;
+
+} else if cloudProvider=="MINIO" && hasMinio {
+ log("has minio");
+ minioSecret = kubectl get secret devtron-minio -n devtroncd;
+ minioAccesskey = jsonSelect(minioSecret, "data.accesskey");
+ minioSecretkey = jsonSelect(minioSecret, "data.secretkey");
+ log(minioSecret);
+ log("====================");
+}
+
+if cloudProvider=="MINIO"{
+  kubeYamlEdit(devtron, "data.MINIO_ACCESS_KEY", minioAccesskey, `/Secret//devtron-secret`);
+  kubeYamlEdit(devtron, "data.MINIO_SECRET_KEY", minioSecretkey, `/Secret//devtron-secret`);
+  kubeYamlEdit(devtron, "data.MINIO_ENDPOINT", minioEndpoint, `/ConfigMap//devtron-cm`);
+}
+
+# minio end
 
 #grafana
 grafanaSecret = kubectl get -n devtroncd secret devtron-grafana-cred-secret;
@@ -391,10 +431,11 @@ kubeYamlEdit(devtron, "data.DEFAULT_CACHE_BUCKET_REGION", defaultCacheBucketRegi
 kubeYamlEdit(devtron, "data.DEFAULT_BUILD_LOGS_BUCKET", defaultBuildLogsBucket, `/ConfigMap//devtron-cm`);
 kubeYamlEdit(devtron, "data.GRAFANA_URL", grafanaUrl, `/ConfigMap//devtron-cm`);
 
+# set default cloud provider
 if !cloudProvider {
   cloudProvider="AWS";
 }
-kubeYamlEdit(devtron, "data.CLOUD_PROVIDER", cloudProvider, `/ConfigMap//devtron-cm`);
+kubeYamlEdit(devtron, "data.BLOB_STORAGE_PROVIDER", cloudProvider, `/ConfigMap//devtron-cm`);
 
 if cloudProvider=="AZURE" {
   kubeYamlEdit(devtron, "data.AZURE_ACCOUNT_NAME", azureAccountName, `/ConfigMap//devtron-cm`);
@@ -456,8 +497,6 @@ log("executed notifier setup");
 
 if cloudProvider=="AZURE" {
 # ---------------- workflow secret start
-azureAccountNameEncoded = base64EncoderPrefix + `echo "` + azureAccountName + `" | tr -d ':\n' ` + base64EncoderSuffix;
-azureAccountNameEncoded = shellScript azureAccountNameEncoded;
 workflowSecret = `
 apiVersion: v1
 data:
@@ -466,6 +505,28 @@ workflowSecret = workflowSecret + azureAccountNameEncoded;
 workflowSecret = workflowSecret + `
   secretKey: `;
 workflowSecret = workflowSecret + azureAccountKey;
+workflowSecret = workflowSecret + `
+kind: Secret
+metadata:
+  name: workflow-minio-cred
+  namespace: devtron-ci
+type: Opaque
+`;
+#----------------- workflow secret end
+
+workflowSecret = kubectl apply workflowSecret;
+}
+
+if cloudProvider=="MINIO" {
+# ---------------- workflow secret start
+workflowSecret = `
+apiVersion: v1
+data:
+  accessKey: `;
+workflowSecret = workflowSecret + minioAccesskey;
+workflowSecret = workflowSecret + `
+  secretKey: `;
+workflowSecret = workflowSecret + minioSecretkey;
 workflowSecret = workflowSecret + `
 kind: Secret
 metadata:
@@ -505,7 +566,22 @@ workflowConfig = workflowConfig +`
       name: workflow-minio-cred
       key: secretKey
     endpoint: devtron-minio.devtroncd:9000`;
+}else if cloudProvider=="MINIO"{
+
+workflowConfig = workflowConfig +`
+    bucket: `;
+workflowConfig = workflowConfig + defaultBuildLogsBucket;
+workflowConfig = workflowConfig +`
+    insecure: true                  #omit for S3/GCS. Needed when minio runs without TLS
+    accessKeySecret:                #omit if accessing via AWS IAM
+      name: workflow-minio-cred
+      key: accessKey
+    secretKeySecret:                #omit if accessing via AWS IAM
+      name: workflow-minio-cred
+      key: secretKey
+    endpoint: devtron-minio.devtroncd:9000`;
 }
+
 
 workflowConfig = workflowConfig + `
     keyFormat: devtron/{{workflow.name}}
@@ -523,14 +599,5 @@ clairEncodedConfig = base64EncoderPrefix + `echo "` + clairConfig + `"` + base64
 clairEncodedConfig = shellScript clairEncodedConfig;
 kubeYamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, `/Secret//clair`);
 clair = kubectl apply -n devtroncd clair -u clairOverride;
-log("executed clair setup");	
+log("executed clair setup");
 
-# -------minio start
-if cloudProvider=="AZURE" {
-  kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
-  kubeYamlEdit(minio, "data.secretkey", azureAccountKey, `/Secret//devtron-minio`);
-  minio = kubectl apply -n devtroncd minio;
-  log("executed minio setup");
-}
-
-# --------minio end
