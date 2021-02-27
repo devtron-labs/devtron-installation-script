@@ -568,23 +568,23 @@ workflowConfig = workflowConfig +`
     endpoint: devtron-minio.devtroncd:9000`;
 }else if cloudProvider=="MINIO"{
 
- workflowConfig = workflowConfig +`
-     bucket: `;
- workflowConfig = workflowConfig + defaultBuildLogsBucket;
- workflowConfig = workflowConfig +`
-     insecure: true                  #omit for S3/GCS. Needed when minio runs without TLS
-     accessKeySecret:                #omit if accessing via AWS IAM
-       name: workflow-minio-cred
-       key: accessKey
-     secretKeySecret:                #omit if accessing via AWS IAM
-       name: workflow-minio-cred
-       key: secretKey
-     endpoint: devtron-minio.devtroncd:9000`;
- }
+workflowConfig = workflowConfig +`
+    bucket: `;
+workflowConfig = workflowConfig + defaultBuildLogsBucket;
+workflowConfig = workflowConfig +`
+    insecure: true                  #omit for S3/GCS. Needed when minio runs without TLS
+    accessKeySecret:                #omit if accessing via AWS IAM
+      name: workflow-minio-cred
+      key: accessKey
+    secretKeySecret:                #omit if accessing via AWS IAM
+      name: workflow-minio-cred
+      key: secretKey
+    endpoint: devtron-minio.devtroncd:9000`;
+}
 
 
 workflowConfig = workflowConfig + `
-     keyFormat: devtron/{{workflow.name}}
+    keyFormat: devtron/{{workflow.name}}
 containerRuntimeExecutor: pns
 executor:
   imagePullPolicy: Always`;
