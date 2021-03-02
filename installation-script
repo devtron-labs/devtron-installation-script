@@ -1,3 +1,6 @@
+LTAG="main";
+REPO_RAW_URL="https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/";
+
 operatorSecret = kubectl get secret -n devtroncd devtron-operator-secret;
 operatorConfigMap = kubectl get cm -n devtroncd devtron-operator-cm;
 postgresqlPassword = jsonSelect(operatorSecret, "data.POSTGRESQL_PASSWORD");
@@ -46,53 +49,103 @@ if !baseURL {
 	log("baseURL is mandatory");
 }
 
-argocd = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/argocd.yaml");
-clair = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair.yaml");
-clairConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/clair-config.yaml");
-dashboard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/dashboard.yaml");
-gitSensor = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/gitsensor.yaml");
-guard = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/guard.yaml");
-postgresql = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/postgresql.yaml");
-imageScanner = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/image-scanner.yaml");
-kubewatch = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/kubewatch.yaml");
-lens = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/lens.yaml");
-migrator = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/migrator.yaml");
-natsOperator = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-operator.yaml");
-natsServer = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-server.yaml");
-natsStreaming = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/nats-streaming.yaml");
-notifier = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/notifier.yaml");
-devtron = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron.yaml");
-devtronDexIngress = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/devtron-dex-ingress.yaml");
-workflow = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/workflow.yaml");
-serviceAccount = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/serviceaccount.yaml");
-namespace = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/namespace.yaml");
-externalSecret = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/external-secret.yaml");
-grafana = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/grafana.yaml");
-rollout = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/rollout.yaml");
-minio = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio.yaml");
-minioStorage = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/yamls/minio-storage.yaml");
+######Generating raw urls
+argocd_raw = REPO_RAW_URL + LTAG + "/yamls/argocd.yaml";
+clair_raw = REPO_RAW_URL + LTAG + "/yamls/clair.yaml";
+clairConfig_raw = REPO_RAW_URL + LTAG + "/yamls/clair-config.yaml";
+dashboard_raw = REPO_RAW_URL + LTAG + "/yamls/dashboard.yaml";
+gitSensor_raw = REPO_RAW_URL + LTAG + "/yamls/gitsensor.yaml";
+guard_raw_ = REPO_RAW_URL + LTAG + "/yamls/guard.yaml";
+postgresql_raw = REPO_RAW_URL + LTAG + "/yamls/postgresql.yaml";
+imageScanner_raw = REPO_RAW_URL + LTAG + "/yamls/image-scanner.yaml";
+kubewatch_raw = REPO_RAW_URL + LTAG + "/yamls/kubewatch.yaml";
+lens_raw = REPO_RAW_URL + LTAG + "/yamls/lens.yaml";
+migrator_raw = REPO_RAW_URL + LTAG + "/yamls/migrator.yaml";
+natsOperator_raw = REPO_RAW_URL + LTAG + "/yamls/nats-operator.yaml";
+natsServer_raw = REPO_RAW_URL + LTAG + "/yamls/nats-server.yaml";
+natsStreaming_raw = REPO_RAW_URL + LTAG + "/yamls/nats-streaming.yaml";
+notifier_raw = REPO_RAW_URL + LTAG + "/yamls/notifier.yaml";
+devtron_raw = REPO_RAW_URL + LTAG + "/yamls/devtron.yaml";
+devtronDexIngress_raw = REPO_RAW_URL + LTAG + "/yamls/devtron-dex-ingress.yaml";
+workflow_raw = REPO_RAW_URL + LTAG + "/yamls/workflow.yaml";
+serviceAccount_raw = REPO_RAW_URL + LTAG + "/yamls/serviceaccount.yaml";
+namespace_raw = REPO_RAW_URL + LTAG + "/yamls/namespace.yaml";
+externalSecret_raw = REPO_RAW_URL + LTAG + "/yamls/external-secret.yaml";
+grafana_raw = REPO_RAW_URL + LTAG + "/yamls/grafana.yaml";
+rollout_raw = REPO_RAW_URL + LTAG + "/yamls/rollout.yaml";
+minio_raw = REPO_RAW_URL + LTAG + "/yamls/minio.yaml";
+minioStorage_raw = REPO_RAW_URL + LTAG + "/yamls/minio-storage.yaml";
 
+######Downloading the manifests
+argocd = download(argocd_raw);
+clair = download(clair_raw);
+clairConfig = download(clairConfig_raw);
+dashboard = download(dashboard_raw);
+gitSensor = download(gitSensor_raw);
+guard = download(guard_raw);
+postgresql = download(postgresql_raw);
+imageScanner = download(imageScanner_raw);
+kubewatch = download(kubewatch_raw);
+lens = download(lens_raw);
+migrator = download(migrator_raw);
+natsOperator = download(natsOperator_raw);
+natsServer = download(natsServer_raw);
+natsStreaming = download(natsStreaming_raw);
+notifier = download(notifier_raw);
+devtron = download(devtron_raw);
+devtronDexIngress = download(devtronDexIngress_raw);
+workflow = download(workflow_raw);
+serviceAccount = download(serviceAccount_raw);
+namespace = download(namespace_raw);
+externalSecret = download(externalSecret_raw);
+grafana = download(grafana_raw);
+rollout = download(rollout_raw);
+minio = download(minio_raw);
+minioStorage = download(minioStorage_raw);
 
-postgresqlOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/postgresql.yaml");
-argocdOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/argocd.yaml");
-devtronOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/devtron.yaml");
-gitSensorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/gitsensor.yaml");
-imageScannerOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/image-scanner.yaml");
-lensOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/lens.yaml");
-notifierOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/notifier.yaml");
-clairOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/clair.yaml");
-dashboardOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/dashboard.yaml");
-guardOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/guard.yaml");
-kubewatchOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/kubewatch.yaml");
-migratorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/migrator.yaml");
-natsOperatorOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/nats-operator.yaml");
-natsServerOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/nats-server.yaml");
-natsStreamingOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/nats-streaming.yaml");
-devtronDexIngressOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/updates/yamls/devtron-dex-ingress.yaml");
-workflowOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/workflow.yaml");
-externalSecretOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/external-secret.yaml");
-grafanaOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/grafana.yaml");
-rolloutOverride = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/updates/rollout.yaml");
+######Generating raw urls
+postgreswl_raw= REPO_RAW_URL + LTAG + "/updates/postgresql.yaml";
+argocdOverride_raw = REPO_RAW_URL + LTAG + "/updates/argocd.yaml";
+devtronOverride_raw = REPO_RAW_URL + LTAG + "/updates/devtron.yaml";
+gitSensorOverride_raw = REPO_RAW_URL + LTAG + "/updates/gitsensor.yaml";
+imageScannerOverride_raw = REPO_RAW_URL + LTAG + "/updates/image-scanner.yaml";
+lensOverride_raw = REPO_RAW_URL + LTAG + "/updates/lens.yaml";
+notifierOverride_raw = REPO_RAW_URL + LTAG + "/updates/notifier.yaml";
+clairOverride_raw = REPO_RAW_URL + LTAG + "/updates/clair.yaml";
+dashboardOverride_raw = REPO_RAW_URL + LTAG + "/updates/dashboard.yaml";
+guardOverride_raw = REPO_RAW_URL + LTAG + "/updates/guard.yaml";
+kubewatchOverride_raw = REPO_RAW_URL + LTAG + "/updates/kubewatch.yaml";
+migratorOverride_raw = REPO_RAW_URL + LTAG + "/updates/migrator.yaml";
+natsOperatorOverride_raw = REPO_RAW_URL + LTAG + "/updates/nats-operator.yaml";
+natsServerOverride_raw = REPO_RAW_URL + LTAG + "/updates/nats-server.yaml";
+natsStreamingOverride_raw = REPO_RAW_URL + LTAG + "/updates/nats-streaming.yaml";
+devtronDexIngressOverride_raw = REPO_RAW_URL + LTAG + "/updates/yamls/devtron-dex-ingress.yaml";
+workflowOverride_raw = REPO_RAW_URL + LTAG + "/updates/workflow.yaml";
+externalSecretOverride_raw = REPO_RAW_URL + LTAG + "/updates/external-secret.yaml";
+grafanaOverride_raw = REPO_RAW_URL + LTAG + "/updates/grafana.yaml";
+rolloutOverride_raw = REPO_RAW_URL + LTAG + "/updates/rollout.yaml";
+
+######Downloading the manifests
+postgresqlOverride = download(postgreswl_raw);
+argocdOverride = download(argocdOverride_raw);
+devtronOverride = download(devtronOverride_raw);
+gitSensorOverride = download(gitSensorOverride_raw);
+imageScannerOverride = download(imageScannerOverride_raw);
+lensOverride = download(lensOverride_raw);
+notifierOverride = download(notifierOverride_raw);
+clairOverride = download(clairOverride_raw);
+dashboardOverride = download(dashboardOverride_raw);
+guardOverride = download(guardOverride_raw);
+kubewatchOverride = download(kubewatchOverride_raw);
+migratorOverride = download(migratorOverride_raw);
+natsOperatorOverride = download(natsOperatorOverride_raw);
+natsServerOverride = download(natsServerOverride_raw);
+natsStreamingOverride = download(natsStreamingOverride_raw);
+devtronDexIngressOverride = download(devtronDexIngressOverride_raw);
+workflowOverride = download(workflowOverride_raw);
+externalSecretOverride = download(externalSecretOverride_raw);
+grafanaOverride = download(grafanaOverride_raw);
+rolloutOverride = download(rolloutOverride_raw);
 
 #minio start
 hasMinio = kubectl get sts devtron-minio -n devtroncd;
@@ -344,9 +397,17 @@ log("executed nats streaming setup");
 makeCertsDir = `#!/bin/bash
 mkdir -p /tmp/certs`;
 makeCertsDir = shellScript makeCertsDir;
-certGen = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/generate_certificate.sh");
-grumpyConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/grumpy_config.txt", "/tmp/certs/grumpy_config.txt");
-caConfig = download("https://raw.githubusercontent.com/devtron-labs/devtron-installation-script/main/ca_config.txt", "/tmp/certs/ca_config.txt");
+
+######Generating raw urls
+certGen_raw = REPO_RAW_URL + LTAG + "/generate_certificate.sh";
+grumpyConfig_raw = REPO_RAW_URL + LTAG + "/grumpy_config.txt";
+caConfig_raw = REPO_RAW_URL + LTAG + "/ca_config.txt";
+
+######Downloading the manifests
+certGen = download(certGen_raw);
+grumpyConfig = download(grumpyConfig_raw, "/tmp/certs/grumpy_config.txt");
+caConfig = download(caConfig_raw, "/tmp/certs/ca_config.txt");
+
 certs = shellScript certGen;
 crt = base64EncoderPrefix + "cat /tmp/certs/grumpy-crt.pem" + base64EncoderSuffix;
 crt = shellScript crt;
@@ -600,4 +661,3 @@ clairEncodedConfig = shellScript clairEncodedConfig;
 kubeYamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, `/Secret//clair`);
 clair = kubectl apply -n devtroncd clair -u clairOverride;
 log("executed clair setup");
-
