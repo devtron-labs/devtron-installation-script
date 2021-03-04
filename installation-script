@@ -43,7 +43,7 @@ base64DecoderPrefix = `#!/bin/bash
 base64DecoderSuffix = ` | base64 -d | tr -d ':\n'`;
 
 if !postgresqlPassword {
-	log("postgresql password is mandatory");
+	postgresqlPassword = shellScript passwordGen;
 }
 if !baseURL {
 	log("baseURL is mandatory");
@@ -103,49 +103,59 @@ rollout = download(rollout_raw);
 minio = download(minio_raw);
 minioStorage = download(minioStorage_raw);
 
-######Generating raw urls
-postgreswl_raw= REPO_RAW_URL + LTAG + "/updates/postgresql.yaml";
-argocdOverride_raw = REPO_RAW_URL + LTAG + "/updates/argocd.yaml";
-devtronOverride_raw = REPO_RAW_URL + LTAG + "/updates/devtron.yaml";
-gitSensorOverride_raw = REPO_RAW_URL + LTAG + "/updates/gitsensor.yaml";
-imageScannerOverride_raw = REPO_RAW_URL + LTAG + "/updates/image-scanner.yaml";
-lensOverride_raw = REPO_RAW_URL + LTAG + "/updates/lens.yaml";
-notifierOverride_raw = REPO_RAW_URL + LTAG + "/updates/notifier.yaml";
-clairOverride_raw = REPO_RAW_URL + LTAG + "/updates/clair.yaml";
-dashboardOverride_raw = REPO_RAW_URL + LTAG + "/updates/dashboard.yaml";
-guardOverride_raw = REPO_RAW_URL + LTAG + "/updates/guard.yaml";
-kubewatchOverride_raw = REPO_RAW_URL + LTAG + "/updates/kubewatch.yaml";
-migratorOverride_raw = REPO_RAW_URL + LTAG + "/updates/migrator.yaml";
-natsOperatorOverride_raw = REPO_RAW_URL + LTAG + "/updates/nats-operator.yaml";
-natsServerOverride_raw = REPO_RAW_URL + LTAG + "/updates/nats-server.yaml";
-natsStreamingOverride_raw = REPO_RAW_URL + LTAG + "/updates/nats-streaming.yaml";
-devtronDexIngressOverride_raw = REPO_RAW_URL + LTAG + "/updates/yamls/devtron-dex-ingress.yaml";
-workflowOverride_raw = REPO_RAW_URL + LTAG + "/updates/workflow.yaml";
-externalSecretOverride_raw = REPO_RAW_URL + LTAG + "/updates/external-secret.yaml";
-grafanaOverride_raw = REPO_RAW_URL + LTAG + "/updates/grafana.yaml";
-rolloutOverride_raw = REPO_RAW_URL + LTAG + "/updates/rollout.yaml";
-
 ######Downloading the manifests
-postgresqlOverride = download(postgreswl_raw);
-argocdOverride = download(argocdOverride_raw);
-devtronOverride = download(devtronOverride_raw);
-gitSensorOverride = download(gitSensorOverride_raw);
-imageScannerOverride = download(imageScannerOverride_raw);
-lensOverride = download(lensOverride_raw);
-notifierOverride = download(notifierOverride_raw);
-clairOverride = download(clairOverride_raw);
-dashboardOverride = download(dashboardOverride_raw);
-guardOverride = download(guardOverride_raw);
-kubewatchOverride = download(kubewatchOverride_raw);
-migratorOverride = download(migratorOverride_raw);
-natsOperatorOverride = download(natsOperatorOverride_raw);
-natsServerOverride = download(natsServerOverride_raw);
-natsStreamingOverride = download(natsStreamingOverride_raw);
-devtronDexIngressOverride = download(devtronDexIngressOverride_raw);
-workflowOverride = download(workflowOverride_raw);
-externalSecretOverride = download(externalSecretOverride_raw);
-grafanaOverride = download(grafanaOverride_raw);
-rolloutOverride = download(rolloutOverride_raw);
+
+argocdOverride = kubectl get cm -n devtroncd argocd-override-cm;
+clairOverride = kubectl get cm -n devtroncd clair-override-cm;
+clairConfigOverride = kubectl get cm -n devtroncd clair-config-override-cm;
+dashboardOverride = kubectl get cm -n devtroncd dashboard-override-cm;
+gitSensorOverride = kubectl get cm -n devtroncd git-sensor-override-cm;
+guardOverride = kubectl get cm -n devtroncd guard-override-cm;
+postgresqlOverride = kubectl get cm -n devtroncd postgresql-override-cm;
+imageScannerOverride = kubectl get cm -n devtroncd image-scanner-override-cm;
+kubewatchOverride = kubectl get cm -n devtroncd kubewatch-override-cm;
+lensOverride = kubectl get cm -n devtroncd lens-override-cm;
+migratorOverride = kubectl get cm -n devtroncd migrator-override-cm;
+natsOperatorOverride = kubectl get cm -n devtroncd nats-operator-override-cm;
+natsServerOverride = kubectl get cm -n devtroncd nats-server-override-cm;
+natsStreamingOverride = kubectl get cm -n devtroncd nats-streaming-override-cm;
+notifierOverride = kubectl get cm -n devtroncd notifier-override-cm;
+devtronOverride = kubectl get cm -n devtroncd devtron-override-cm;
+devtronDexIngressOverride = kubectl get cm -n devtroncd devtron-dex-ingress-override-cm;
+workflowOverride = kubectl get cm -n devtroncd workflow-override-cm;
+serviceAccountOverride = kubectl get cm -n devtroncd devtron-service-account-override-cm;
+namespaceOverride = kubectl get cm -n devtroncd namespace-override-cm;
+externalSecretOverride = kubectl get cm -n devtroncd external-secret-override-cm;
+grafanaOverride = kubectl get cm -n devtroncd grafana-override-cm;
+rolloutOverride = kubectl get cm -n devtroncd rollout-override-cm;
+minioOverride = kubectl get cm -n devtroncd minio-override-cm;
+minioStorageOverride = kubectl get cm -n devtroncd minio-storage-override-cm;
+
+
+argocdOverride = jsonSelect(argocdOverride, "data.override");
+clairOverride = jsonSelect(clairOverride, "data.override");
+clairConfigOverride = jsonSelect(clairConfigOverride, "data.override");
+dashboardOverride = jsonSelect(dashboardOverride, "data.override");
+gitSensorOverride = jsonSelect(gitSensorOverride, "data.override");
+guardOverride = jsonSelect(guardOverride, "data.override");
+postgresqlOverride = jsonSelect(postgresqlOverride, "data.override");
+imageScannerOverride = jsonSelect(imageScannerOverride, "data.override");
+kubewatchOverride = jsonSelect(kubewatchOverride, "data.override");
+lensOverride = jsonSelect(lensOverride, "data.override");
+migratorOverride = jsonSelect(migratorOverride, "data.override");
+natsOperatorOverride = jsonSelect(natsOperatorOverride, "data.override");
+natsServerOverride = jsonSelect(natsServerOverride, "data.override");
+natsStreamingOverride = jsonSelect(natsStreamingOverride, "data.override");
+notifierOverride = jsonSelect(notifierOverride, "data.override");
+devtronOverride = jsonSelect(devtronOverride, "data.override");
+devtronDexIngressOverride = jsonSelect(devtronDexIngressOverride, "data.override");
+workflowOverride = jsonSelect(workflowOverride, "data.override");
+serviceAccountOverride = jsonSelect(serviceAccountOverride, "data.override");
+namespaceOverride = jsonSelect(namespaceOverride, "data.override");
+grafanaOverride = jsonSelect(grafanaOverride, "data.override");
+rolloutOverride = jsonSelect(rolloutOverride, "data.override");
+minioOverride = jsonSelect(minioOverride, "data.override");
+minioStorageOverride = jsonSelect(minioStorageOverride, "data.override");
 
 #minio start
 hasMinio = kubectl get sts devtron-minio -n devtroncd;
@@ -158,7 +168,7 @@ if cloudProvider=="AZURE" {
   azureAccountNameEncoded = shellScript azureAccountNameEncoded;
   kubeYamlEdit(minio, "data.accesskey", azureAccountNameEncoded, `/Secret//devtron-minio`);
   kubeYamlEdit(minio, "data.secretkey", azureAccountKey, `/Secret//devtron-minio`);
-#  minio = kubectl apply -n devtroncd minio;
+  minio = kubectl apply -n devtroncd minio;
   log("executed minio setup");
 } else if cloudProvider=="MINIO" && !hasMinio {
   log("no minio");
@@ -166,7 +176,7 @@ if cloudProvider=="AZURE" {
   minioSecretkey = shellScript passwordGen;
   kubeYamlEdit(minioStorage, "data.accesskey", minioAccesskey, `/Secret//devtron-minio`);
   kubeYamlEdit(minioStorage, "data.secretkey", minioSecretkey, `/Secret//devtron-minio`);
-#    minioStorage = kubectl apply -n devtroncd minioStorage ;
+    minioStorage = kubectl apply -n devtroncd minioStorage ;
 
 } else if cloudProvider=="MINIO" && hasMinio {
  log("has minio");
@@ -223,7 +233,7 @@ serve_from_sub_path = true
 allow_org_create = true
  `;
 kubeYamlEdit(grafana, `data.grafana\.ini`, grafanaIni, `/ConfigMap/devtroncd/devtron-grafana`);
-#grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
+grafana = kubectl apply -n devtroncd grafana -u grafanaOverride;
 log("setup grafana");
 
 if !hasgrafana {
@@ -290,7 +300,7 @@ providers:
 
 	grafanaCm = kubectl get -n devtroncd cm devtron-grafana;
 	jsonEdit(grafanaCm, `data.dashboardproviders\.yaml`, grafanaDashboardProvider);
-#	grafanaCm = kubectl apply -n devtroncd grafanaCm;
+	grafanaCm = kubectl apply -n devtroncd grafanaCm;
 	log("setup up grafana cm with provider yaml");
 
 	allDevtroncdPo = kubectl get po -n devtroncd;
@@ -300,16 +310,16 @@ providers:
 	log("deleted grafana pod to reload configmap");
 }
 
-#namespaces = kubectl apply namespace;
+namespaces = kubectl apply namespace;
 log("created namespaces");
-#sa = kubectl apply serviceAccount;
+sa = kubectl apply serviceAccount;
 log("created service account");
 
 #externalSecret
 externalSecretAmazonRegion = base64EncoderPrefix + `echo "` + externalSecretAmazonRegion + `" | tr -d ':\n' ` + base64EncoderSuffix;
 externalSecretAmazonRegion = shellScript externalSecretAmazonRegion;
 kubeYamlEdit(externalSecret, "data.AWS_REGION", externalSecretAmazonRegion, `/Secret//devtron-kubernetes-external-secret`);
-#externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
+externalSecret = kubectl apply -n devtroncd externalSecret -u externalSecretOverride;
 log("created external secret");
 
 #postgresql
@@ -317,7 +327,7 @@ log("created external secret");
 hasPostgresql = kubectl get sts postgresql-postgresql -n devtroncd;
 if !hasPostgresql {
 	kubeYamlEdit(postgresql, "data.postgresql-password", postgresqlPassword, `/Secret//postgresql-postgresql`);
-#	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
+	postgresql = kubectl apply -n devtroncd postgresql -u postgresqlOverride;
 	log("created postgresql");
 }
 #argocd
@@ -352,13 +362,13 @@ if hasArgocd {
 	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-ssh-known-hosts-cm`);
 	kubeYamlDelete(argocd, filter=`/ConfigMap//argocd-tls-certs-cm`);
 }
-#argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
+argocd = kubectl apply -n devtroncd argocd -u argocdOverride;
 #patchLoad = '{"data":{"url":"' + baseURL + '", "dex.config:"' + dexConfig + '}}';
 #pa = kubectl patch -n devtroncd cm/argocd-cm --type "application/merge-patch+json" -p patchLoad;
 log("executed argocd setup command");
 
 #rollout
-#rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
+rollout = kubectl apply -n devtroncd rollout -u rolloutOverride;
 log("executed rollout setup command");
 
 #git-sensor
@@ -381,16 +391,16 @@ if !migDelete {
 	log("migration job deletion failed");
 }
 kubeYamlEdit(migrator, "data.DB_PASSWORD", postgresqlPassword, `/Secret//postgresql-migrator`);
-#migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
+migrator = kubectl apply -n devtroncd migrator -u migratorOverride;
 log("executed migrator setup command");
 
 #nats
-#natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
+natsOperator = kubectl apply -n devtroncd natsOperator -u natsOperatorOverride;
 log("executed nats operator setup");
 ignore = shellScript sleep50;
-#natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
+natsServer = kubectl apply -n devtroncd natsServer -u natsServerOverride;
 log("executed nats server setup");
-#natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
+natsStreaming = kubectl apply -n devtroncd natsStreaming -u natsStreamingOverride;
 log("executed nats streaming setup");
 
 #guard
@@ -514,7 +524,7 @@ if !setupDevtronIngress {
   kubeYamlEdit(devtron, "spec.type", "LoadBalancer", `/Service//devtron-service`);
 }
 
-#devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
+devtron = kubectl apply -n devtroncd devtron -u devtronOverride;
 log("executed devtron setup");
 
 if devtronIngressAnnotations {
@@ -537,23 +547,23 @@ if annotations {
 
 if setupDevtronIngress {
   log("setup ingress");
-#  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
+  devtronDexIngress = kubectl apply -n devtroncd devtronDexIngress -u devtronDexIngressOverride;
 }
 
 log("executed devtron ingress setup");
-#guard = kubectl apply -n devtroncd guard -u guardOverride;
+guard = kubectl apply -n devtroncd guard -u guardOverride;
 log("executed guard setup");
-#dashboard = kubectl apply -n devtroncd dashboard -u dashboardOverride;
+dashboard = kubectl apply -n devtroncd dashboard -u dashboardOverride;
 log("executed dashboard setup");
-#gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
+gitSensor = kubectl apply -n devtroncd gitSensor -u gitSensorOverride;
 log("executed git sensor setup");
-#imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
+imageScanner = kubectl apply -n devtroncd imageScanner -u imageScannerOverride;
 log("executed image scanner setup");
-#kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
+kubewatch = kubectl apply -n devtroncd kubewatch -u kubewatchOverride;
 log("executed kubewatch setup");
-#lens = kubectl apply -n devtroncd lens -u lensOverride;
+lens = kubectl apply -n devtroncd lens -u lensOverride;
 log("executed lens setup");
-#notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
+notifier = kubectl apply -n devtroncd notifier -u notifierOverride;
 log("executed notifier setup");
 
 if cloudProvider=="AZURE" {
@@ -575,7 +585,7 @@ type: Opaque
 `;
 #----------------- workflow secret end
 
-#workflowSecret = kubectl apply workflowSecret;
+workflowSecret = kubectl apply workflowSecret;
 }
 
 if cloudProvider=="MINIO" {
@@ -597,7 +607,7 @@ type: Opaque
 `;
 #----------------- workflow secret end
 
-#workflowSecret = kubectl apply workflowSecret;
+workflowSecret = kubectl apply workflowSecret;
 }
 
 workflowConfig = `parallelism: 50
@@ -650,7 +660,7 @@ containerRuntimeExecutor: pns
 executor:
   imagePullPolicy: Always`;
 kubeYamlEdit(workflow, "data.config", workflowConfig, `/ConfigMap//workflow-controller-configmap`);
-#workflow = kubectl apply -n argo workflow -u workflowOverride;
+workflow = kubectl apply -n argo workflow -u workflowOverride;
 log("executed workflow setup");
 postgresPlainPwd = base64DecoderPrefix + `echo "` + postgresqlPassword + `" | tr -d ':\n' ` + base64DecoderSuffix;
 postgresPlainPwd = shellScript postgresPlainPwd;
@@ -659,5 +669,5 @@ yamlEdit(clairConfig, "clair.database.options.source", clairPosrgresUrl, 0);
 clairEncodedConfig = base64EncoderPrefix + `echo "` + clairConfig + `"` + base64EncoderSuffix;
 clairEncodedConfig = shellScript clairEncodedConfig;
 kubeYamlEdit(clair, `data.config\.yaml`, clairEncodedConfig, `/Secret//clair`);
-#clair = kubectl apply -n devtroncd clair -u clairOverride;
+clair = kubectl apply -n devtroncd clair -u clairOverride;
 log("executed clair setup");
