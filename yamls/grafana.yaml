@@ -241,7 +241,7 @@ metadata:
 data:
   run.sh: |-
     @test "Test Health" {
-      url="http://devtron-grafana/api/health"
+      url="http://devtron-grafana/grafana/api/health"
 
       code=$(wget --server-response --spider --timeout 10 --tries 1 ${url} 2>&1 | awk '/^  HTTP/{print $2}')
       [ "$code" == "200" ]
@@ -267,7 +267,6 @@ spec:
   resources:
     requests:
       storage: "20Gi"
-  storageClassName: gp2      
 ---
 # Source: grafana/templates/clusterrole.yaml
 kind: ClusterRole
